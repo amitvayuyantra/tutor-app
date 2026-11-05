@@ -89,8 +89,9 @@ kotlin {
     }
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
+// Room's plugin keeps one schema file per database version (safe with several build variants).
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
