@@ -26,6 +26,29 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # Optional: if you add your upload key as repository secrets, the release bundle is signed.
+      # See README, "Create a signed release App Bundle".
+      - name: Prepare release signing key (only if secrets exist)
+        env:
+          KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            {
+              echo "RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/release.jks"
+              echo "RELEASE_STORE_PASSWORD=$STORE_PW"
+              echo "RELEASE_KEY_ALIAS=$KEY_ALIAS"
+              echo "RELEASE_KEY_PASSWORD=$KEY_PW"
+            } >> "$GITHUB_ENV"
+            echo "Release signing: ON"
+          else
+            echo "Release signing: OFF (no secrets set; release outputs are unsigned)"
+          fi
+
       - name: Build, run tests, build release
         id: gradle
         shell: bash
