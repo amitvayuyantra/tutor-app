@@ -8,7 +8,7 @@
     <string name="delete">हटाएँ</string>
     <string name="close">बंद करें</string>
     <string name="copy">संदेश कॉपी करें</string>
-    <string name="loading">लोड हो रहा है</string>
+    <string name="loading">लोड हो रहा है…</string>
     <string name="saved">सेव हो गया</string>
     <string name="cd_back">वापस जाएँ</string>
     <string name="cd_clear_search">खोज साफ़ करें</string>

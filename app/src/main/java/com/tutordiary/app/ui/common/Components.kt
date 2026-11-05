@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -166,11 +165,18 @@ fun EmptyState(title: String, body: String, actionLabel: String? = null, onActio
     }
 }
 
+/**
+ * Shown for the short moment data is loading. A plain label instead of a spinning
+ * animation: lighter on low-end phones, and it lets automated UI tests settle.
+ */
 @Composable
 fun LoadingBox() {
-    val label = stringResource(R.string.loading)
-    Box(Modifier.fillMaxSize().semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+    Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+        Text(
+            stringResource(R.string.loading),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
