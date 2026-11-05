@@ -24,12 +24,14 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 
 /**
  * Opens the real app and taps through it like a tutor would:
  * setup → add student → record payment → open WhatsApp reminder → waiver → batches → attendance → settings.
  */
 @HiltAndroidTest
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], application = HiltTestApplication::class, qualifiers = "w420dp-h2000dp")
 class AppFlowTest {
@@ -49,17 +51,20 @@ class AppFlowTest {
     @Test
     fun tutorCanSetUpAddStudentRecordPaymentAndRemind() {
         // 1. First-launch setup
+        println("STEP 1: First-launch setup")
         waitFor("Welcome to Tutor Diary")
         compose.onNodeWithText("Your name").performTextInput("Priya")
         compose.onNodeWithText("UPI ID (optional)").performTextInput("priya@okaxis")
         compose.onNodeWithText("Start").performClick()
 
         // 2. Home, empty
+        println("STEP 2: Home, empty")
         waitFor("Expected this month")
         waitFor("No students yet")
         compose.clickButton("Add student")
 
         // 3. Add a student (bad phone first, to see validation)
+        println("STEP 3: Add a student (bad phone first, to see validation)")
         waitFor("New student")
         compose.onNodeWithText("Student name").performTextInput("Aarav")
         compose.onNodeWithText("Parent name").performTextInput("Mr Sharma")
@@ -72,11 +77,13 @@ class AppFlowTest {
         compose.clickButton("Save")
 
         // 4. Back on home: the student owes this month's fee
+        println("STEP 4: Back on home: the student owes this month's fee")
         waitFor("Students with unpaid fees")
         waitFor("Aarav")
         assertTrue(compose.onAllNodesWithText("₹1,500").fetchSemanticsNodes().isNotEmpty())
 
         // 5. Record a part payment
+        println("STEP 5: Record a part payment")
         compose.clickButton("Record payment")
         waitFor("Amount (₹)")
         compose.onNodeWithText("Amount (₹)").performTextInput("500")
@@ -86,6 +93,7 @@ class AppFlowTest {
         waitFor("₹1,000")
 
         // 6. Reminder: preview contains the details, then opens wa.me
+        println("STEP 6: Reminder: preview contains the details, then opens wa.me")
         compose.clickButton("Send reminder")
         waitFor("Fee reminder")
         waitFor("priya@okaxis", substring = true)
@@ -96,6 +104,7 @@ class AppFlowTest {
         assertTrue(started?.dataString.orEmpty().startsWith("https://wa.me/919876543210?text="))
 
         // 7. Student page: last reminder recorded, waive the month
+        println("STEP 7: Student page: last reminder recorded, waive the month")
         compose.onNode(hasText("Aarav") and hasClickAction()).performClick()
         waitFor("Last reminder opened", substring = true)
         compose.clickButton("Waive fee")
@@ -106,6 +115,7 @@ class AppFlowTest {
         waitFor("₹500")
 
         // 8. Batches and attendance
+        println("STEP 8: Batches and attendance")
         compose.onNode(hasContentDescription("Go back")).performClick()
         waitFor("Expected this month")
         compose.clickButton("Attendance")
@@ -120,6 +130,7 @@ class AppFlowTest {
         waitFor("No active students in this batch.")
 
         // 9. Settings
+        println("STEP 9: Settings")
         compose.clickButton("Settings")
         waitFor("Backup and export")
         waitFor("No backup made yet")
