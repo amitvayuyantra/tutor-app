@@ -1,0 +1,106 @@
+name: Build and test
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build, run tests, build release
+        id: gradle
+        shell: bash
+        run: |
+          set -o pipefail
+          chmod +x gradlew
+          ./gradlew --continue --stacktrace \
+            testDebugUnitTest assembleDebug assembleRelease bundleRelease 2>&1 | tee build.log
+
+      - name: Summarise results
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p ci-out
+          tail -n 4000 build.log > ci-out/build.log || true
+          python3 - <<'PY' > ci-out/test-summary.txt || true
+          import glob, xml.etree.ElementTree as ET
+          total = fail = err = skip = 0
+          lines = []
+          for f in sorted(glob.glob('app/build/test-results/**/*.xml', recursive=True)):
+              r = ET.parse(f).getroot()
+              total += int(r.get('tests', 0)); fail += int(r.get('failures', 0))
+              err += int(r.get('errors', 0)); skip += int(r.get('skipped', 0))
+              for tc in r.iter('testcase'):
+                  bad = tc.find('failure') if tc.find('failure') is not None else tc.find('error')
+                  status = 'FAIL' if bad is not None else ('SKIP' if tc.find('skipped') is not None else 'PASS')
+                  lines.append(f"{status}  {tc.get('classname')}.{tc.get('name')}")
+                  if bad is not None:
+                      lines.append('    ' + (bad.get('message') or '')[:800].replace('\n', '\n    '))
+                      lines.append('    ' + (bad.text or '')[:1500].replace('\n', '\n    '))
+          print(f"TOTAL={total} FAILED={fail} ERRORS={err} SKIPPED={skip}")
+          print('\n'.join(lines))
+          PY
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n 1)
+          APK=$(ls app/build/outputs/apk/release/*.apk 2>/dev/null | head -n 1 || true)
+          if [ -n "$APK" ]; then
+            "$BT/aapt" dump permissions "$APK" > ci-out/release-permissions.txt 2>&1 || true
+            "$BT/aapt" dump badging "$APK" | head -n 5 >> ci-out/release-permissions.txt 2>&1 || true
+          fi
+          ls -la app/build/outputs/apk/*/ app/build/outputs/bundle/*/ > ci-out/outputs.txt 2>&1 || true
+          echo "${{ steps.gradle.outcome }}" > ci-out/outcome.txt
+          echo "${{ github.sha }}" > ci-out/commit.txt
+
+      - name: Push results to ci-logs branch
+        if: always()
+        shell: bash
+        run: |
+          cd ci-out
+          git init -q -b ci-logs
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git add -A
+          git commit -qm "CI results for ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ci-logs
+
+      - name: Upload build outputs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutor-diary-outputs
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
+      - name: Publish test APK to Releases
+        if: success() && github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk TutorDiary-test.apk
+          gh release delete test-build -y --cleanup-tag || true
+          gh release create test-build TutorDiary-test.apk \
+            --target "${{ github.sha }}" \
+            --title "Tutor Diary - latest test build" \
+            --notes "Test build from commit ${{ github.sha }}. Signed with a public TEST key: fine for trying on your phone, NOT for the Play Store." \
+            --prerelease

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An open notebook with a tick: "the tutor's diary". -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- left page -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M30,38 C38,35 46,35 52,39 L52,72 C46,68 38,68 30,71 Z" />
+    <!-- right page -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M56,39 C62,35 70,35 78,38 L78,71 C70,68 62,68 56,72 Z" />
+    <!-- lines on left page -->
+    <path
+        android:strokeColor="#FF1F6F5C"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:pathData="M35,46 L47,46 M35,52 L47,52 M35,58 L44,58" />
+    <!-- tick on right page -->
+    <path
+        android:strokeColor="#FFF2A541"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M61,54 L66,59 L74,48" />
+</vector>
