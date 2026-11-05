@@ -105,8 +105,21 @@ class AppFlowTest {
 
         // 7. Student page: last reminder recorded, waive the month
         println("STEP 7: Student page: last reminder recorded, waive the month")
-        compose.onNode(hasText("Aarav") and hasClickAction()).performClick()
-        waitFor("Last reminder opened", substring = true)
+        println("Activity state before opening student: " + compose.activity.lifecycle.currentState)
+        val changes = java.util.concurrent.ConcurrentHashMap<String, java.util.concurrent.atomic.AtomicInteger>()
+        val handle = androidx.compose.runtime.snapshots.Snapshot.registerApplyObserver { changed, _ ->
+            changed.forEach { changes.getOrPut(it.toString().take(400)) { java.util.concurrent.atomic.AtomicInteger() }.incrementAndGet() }
+        }
+        try {
+            compose.onNode(hasText("Aarav") and hasClickAction()).performClick()
+            waitFor("Last reminder opened", substring = true)
+        } catch (t: Throwable) {
+            println("STATE CHANGES WHILE STUCK (most frequent first):")
+            changes.entries.sortedByDescending { it.value.get() }.take(15).forEach { println("  ${it.value.get()} x ${it.key}") }
+            throw t
+        } finally {
+            handle.dispose()
+        }
         compose.clickButton("Waive fee")
         waitFor("Waive fee for a month")
         compose.onNodeWithText("Reason (required)").performTextInput("Diwali")
