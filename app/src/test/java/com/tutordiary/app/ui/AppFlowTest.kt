@@ -179,7 +179,8 @@ class AppFlowTest {
         }
         compose.onNodeWithText("Batch name").performTextInput("Class 8 Maths")
         compose.clickButton("Save")
-        waitFor("Class 8 Maths")
+        // Wait for text that only exists on the batch list (the name is also in the edit box).
+        waitFor("Active students: 0")
         diagnose("attendance after batch") {
             pressBack()
             waitFor("No active students in this batch.")
