@@ -12,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.printToString
 import com.tutordiary.app.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -56,6 +57,11 @@ class AppFlowTest {
         } catch (t: Throwable) {
             println("STATE CHANGES WHILE STUCK at $label (most frequent first):")
             changes.entries.sortedByDescending { it.value.get() }.take(15).forEach { println("  ${it.value.get()} x ${it.key}") }
+            try {
+                println("SCREEN TREE:\n" + compose.onAllNodes(androidx.compose.ui.test.isRoot()).printToString(maxDepth = 40))
+            } catch (e: Throwable) {
+                println("could not print tree: $e")
+            }
             throw t
         } finally {
             handle.dispose()
@@ -158,6 +164,7 @@ class AppFlowTest {
         compose.clickButton("Create batch")
         waitFor("Batches")
         diagnose("batch page") {
+            waitFor("New batch")
             compose.clickButton("New batch")
             waitFor("Batch name")
         }
