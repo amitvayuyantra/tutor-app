@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tutordiary.app.R
 import com.tutordiary.app.ui.attendance.AttendanceScreen
+import com.tutordiary.app.ui.batches.BatchEditScreen
 import com.tutordiary.app.ui.batches.BatchesScreen
 import com.tutordiary.app.ui.home.HomeScreen
 import com.tutordiary.app.ui.settings.SettingsScreen
@@ -38,6 +39,7 @@ import com.tutordiary.app.ui.students.PaymentEditScreen
 import com.tutordiary.app.ui.students.StudentDetailScreen
 import com.tutordiary.app.ui.students.StudentEditScreen
 import com.tutordiary.app.ui.students.StudentsScreen
+import com.tutordiary.app.ui.students.WaiverScreen
 
 private enum class Tab(val route: String, val label: Int, val icon: ImageVector) {
     HOME("home", R.string.tab_home, Icons.Filled.Home),
@@ -52,6 +54,10 @@ private object Routes {
     const val PAYMENT = "payment/{studentId}/{paymentId}"
     const val BATCHES = "batches"
     const val TEMPLATES = "templates"
+    const val WAIVER = "waiver/{studentId}"
+    const val BATCH_EDIT = "batch_edit/{batchId}"
+    fun waiver(studentId: Long) = "waiver/$studentId"
+    fun batchEdit(id: Long) = "batch_edit/$id"
     fun student(id: Long) = "student/$id"
     fun studentEdit(id: Long) = "student_edit/$id"
     fun payment(studentId: Long, paymentId: Long = 0) = "payment/$studentId/$paymentId"
@@ -125,6 +131,7 @@ fun AppNav() {
                     onEdit = { nav.navigate(Routes.studentEdit(it)) },
                     onRecordPayment = { nav.navigate(Routes.payment(it)) },
                     onEditPayment = { s, p -> nav.navigate(Routes.payment(s, p)) },
+                    onWaive = { nav.navigate(Routes.waiver(it)) },
                 )
             }
             composable(Routes.STUDENT_EDIT, arguments = listOf(idArg)) {
@@ -136,7 +143,11 @@ fun AppNav() {
             ) {
                 PaymentEditScreen(onDone = back)
             }
-            composable(Routes.BATCHES) { BatchesScreen(onBack = back) }
+            composable(Routes.BATCHES) { BatchesScreen(onBack = back, onEditBatch = { nav.navigate(Routes.batchEdit(it)) }) }
+            composable(Routes.BATCH_EDIT, arguments = listOf(navArgument("batchId") { type = NavType.LongType })) {
+                BatchEditScreen(onDone = back)
+            }
+            composable(Routes.WAIVER, arguments = listOf(idArg)) { WaiverScreen(onDone = back) }
             composable(Routes.TEMPLATES) { TemplatesScreen(onBack = back) }
         }
     }

@@ -73,6 +73,7 @@ fun StudentDetailScreen(
     onEdit: (Long) -> Unit,
     onRecordPayment: (Long) -> Unit,
     onEditPayment: (studentId: Long, paymentId: Long) -> Unit,
+    onWaive: (studentId: Long) -> Unit,
     vm: StudentDetailViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -83,7 +84,6 @@ fun StudentDetailScreen(
     val snackbar = remember { SnackbarHostState() }
     var confirm by rememberSaveable { mutableStateOf<Confirm?>(null) }
     var showReminder by rememberSaveable { mutableStateOf(false) }
-    var showWaiver by rememberSaveable { mutableStateOf(false) }
     var removeWaiverId by rememberSaveable { mutableStateOf<Long?>(null) }
 
     LaunchedEffect(message) {
@@ -113,7 +113,7 @@ fun StudentDetailScreen(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 onRecordPayment = { onRecordPayment(student.id) },
                 onSendReminder = { showReminder = true },
-                onWaive = { showWaiver = true },
+                onWaive = { onWaive(student.id) },
                 onRemoveWaiver = { removeWaiverId = it },
                 onEditPayment = { onEditPayment(student.id, it) },
                 onShiftMonth = vm::shiftAttendanceMonth,
@@ -151,13 +151,6 @@ fun StudentDetailScreen(
     val profile = state.profile
     if (showReminder && student != null && ledger != null && profile != null) {
         ReminderDialog(student, ledger, profile, onOpened = vm::markReminderOpened, onDismiss = { showReminder = false })
-    }
-    if (showWaiver) {
-        WaiverDialog(
-            months = state.months.filter { it.waiver == null },
-            onSave = { month, amount, note -> vm.addWaiver(month, amount, note) { showWaiver = false } },
-            onDismiss = { showWaiver = false },
-        )
     }
 }
 
@@ -326,54 +319,4 @@ private fun PaymentRow(p: PaymentEntity, locale: java.util.Locale, onClick: () -
             Text(Money.format(p.amount), style = MaterialTheme.typography.titleMedium)
         }
     }
-}
-
-@Composable
-internal fun WaiverDialog(months: List<MonthLine>, onSave: (Int, Long, String) -> Unit, onDismiss: () -> Unit) {
-    val locale = currentLocale()
-    var month by rememberSaveable { mutableStateOf(months.firstOrNull()?.charge?.month) }
-    val charge = months.firstOrNull { it.charge.month == month }?.charge
-    var amount by rememberSaveable(month) { mutableStateOf(charge?.amount?.toString() ?: "") }
-    var note by rememberSaveable { mutableStateOf("") }
-    var error by remember { mutableStateOf<Int?>(null) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.waiver_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (months.isEmpty()) {
-                    Text(stringResource(R.string.waiver_no_months))
-                } else {
-                    Selector(
-                        label = stringResource(R.string.field_month),
-                        options = months.map { it.charge.month to formatMonthKey(it.charge.month, locale) },
-                        selected = month,
-                        onSelect = { month = it; error = null },
-                    )
-                    FormField(amount, { amount = it; error = null }, stringResource(R.string.field_waiver_amount), keyboard = FieldKeyboard.Number)
-                    FormField(note, { note = it; error = null }, stringResource(R.string.field_waiver_note), keyboard = FieldKeyboard.Text)
-                    error?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(
-                enabled = months.isNotEmpty(),
-                onClick = {
-                    val m = month
-                    val a = Money.parse(amount)
-                    when {
-                        m == null || charge == null -> error = R.string.err_no_charge
-                        a == null -> error = R.string.err_amount_invalid
-                        a <= 0 -> error = R.string.err_amount_positive
-                        a > charge.amount -> error = R.string.err_waiver_too_big
-                        note.isBlank() -> error = R.string.err_note_required
-                        else -> onSave(m, a, note)
-                    }
-                },
-            ) { Text(stringResource(R.string.save)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
-    )
 }

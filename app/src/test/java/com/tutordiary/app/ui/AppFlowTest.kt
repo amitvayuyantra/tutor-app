@@ -137,7 +137,7 @@ class AppFlowTest {
         } finally {
             handle.dispose()
         }
-        diagnose("waiver dialog") {
+        diagnose("waiver page") {
             compose.clickButton("Waive fee")
             waitFor("Waive fee for a month")
         }
@@ -154,7 +154,7 @@ class AppFlowTest {
         waitFor("No batches yet")
         compose.clickButton("Create batch")
         waitFor("Batches")
-        diagnose("batch dialog") {
+        diagnose("batch page") {
             compose.clickButton("New batch")
             waitFor("Batch name")
         }

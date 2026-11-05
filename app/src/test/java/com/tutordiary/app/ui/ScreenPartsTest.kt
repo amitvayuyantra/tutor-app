@@ -61,34 +61,6 @@ class ScreenPartsTest {
         compose.onNodeWithText("Present 3 of 4 days").assertExists()
     }
 
-    @Test fun waiverDialogSettles() {
-        compose.setContent {
-            TutorDiaryTheme {
-                com.tutordiary.app.ui.students.WaiverDialog(
-                    months = listOf(MonthLine(charge, null, 1000)),
-                    onSave = { _, _, _ -> },
-                    onDismiss = {},
-                )
-            }
-        }
-        compose.waitForIdle()
-        compose.onNodeWithText("Waive fee for a month").assertExists()
-    }
-
-    @Test fun batchDialogSettles() {
-        compose.setContent {
-            TutorDiaryTheme {
-                com.tutordiary.app.ui.batches.BatchDialog(
-                    batch = com.tutordiary.app.data.db.BatchEntity(name = "", subject = null, classDays = null, classTime = null),
-                    onSave = { _, _ -> },
-                    onDismiss = {},
-                )
-            }
-        }
-        compose.waitForIdle()
-        compose.onNodeWithText("Batch name").assertExists()
-    }
-
     @Test fun formFieldSettles() {
         compose.setContent {
             TutorDiaryTheme {

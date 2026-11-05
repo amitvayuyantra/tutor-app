@@ -107,6 +107,8 @@ class TutorRepository @Inject constructor(
         return if (clean.id == 0L) batchDao.insert(clean) else { batchDao.update(clean); clean.id }
     }
 
+    suspend fun getBatch(id: Long): BatchEntity? = batchDao.get(id)
+
     suspend fun setBatchArchived(id: Long, archived: Boolean) {
         val b = batchDao.get(id) ?: throw RuleException(Rule.NOT_FOUND)
         batchDao.update(b.copy(archived = archived))

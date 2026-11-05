@@ -69,21 +69,14 @@ class BatchesViewModel @Inject constructor(private val repo: TutorRepository) : 
 
     val message = MutableStateFlow<String?>(null)
 
-    fun save(batch: BatchEntity, onDone: () -> Unit, onError: (Int) -> Unit) {
-        viewModelScope.launch {
-            try { repo.saveBatch(batch); onDone() } catch (e: RuleException) { onError(ruleMessage(e.rule)) }
-        }
-    }
-
     fun setArchived(id: Long, archived: Boolean) {
         viewModelScope.launch { repo.setBatchArchived(id, archived) }
     }
 }
 
 @Composable
-fun BatchesScreen(onBack: () -> Unit, vm: BatchesViewModel = hiltViewModel()) {
+fun BatchesScreen(onBack: () -> Unit, onEditBatch: (Long) -> Unit, vm: BatchesViewModel = hiltViewModel()) {
     val rows by vm.rows.collectAsStateWithLifecycle()
-    var editing by remember { mutableStateOf<BatchEntity?>(null) }
     var archiveRow by remember { mutableStateOf<BatchRow?>(null) }
     val snackbar = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -98,7 +91,7 @@ fun BatchesScreen(onBack: () -> Unit, vm: BatchesViewModel = hiltViewModel()) {
         snackbar = snackbar,
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { editing = BatchEntity(name = "", subject = null, classDays = null, classTime = null) },
+                onClick = { onEditBatch(0) },
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text(stringResource(R.string.batch_new)) },
             )
@@ -116,14 +109,14 @@ fun BatchesScreen(onBack: () -> Unit, vm: BatchesViewModel = hiltViewModel()) {
                 val active = list.filter { !it.batch.archived }
                 val archived = list.filter { it.batch.archived }
                 items(active, key = { it.batch.id }) { row ->
-                    BatchCard(row, onEdit = { editing = row.batch }, actionLabel = stringResource(R.string.archive)) {
+                    BatchCard(row, onEdit = { onEditBatch(row.batch.id) }, actionLabel = stringResource(R.string.archive)) {
                         if (row.activeStudents > 0) blockedCount = row.activeStudents else archiveRow = row
                     }
                 }
                 if (archived.isNotEmpty()) {
                     item { SectionTitle(stringResource(R.string.archived_section)) }
                     items(archived, key = { it.batch.id }) { row ->
-                        BatchCard(row, onEdit = { editing = row.batch }, actionLabel = stringResource(R.string.unarchive)) {
+                        BatchCard(row, onEdit = { onEditBatch(row.batch.id) }, actionLabel = stringResource(R.string.unarchive)) {
                             vm.setArchived(row.batch.id, false)
                         }
                     }
@@ -132,7 +125,6 @@ fun BatchesScreen(onBack: () -> Unit, vm: BatchesViewModel = hiltViewModel()) {
         }
     }
 
-    editing?.let { b -> BatchDialog(b, onSave = { batch, onError -> vm.save(batch, { editing = null }, onError) }, onDismiss = { editing = null }) }
     archiveRow?.let { row ->
         com.tutordiary.app.ui.common.ConfirmDialog(
             title = row.batch.name,
@@ -160,32 +152,4 @@ private fun BatchCard(row: BatchRow, onEdit: () -> Unit, actionLabel: String, on
             TextButton(onClick = onAction) { Text(actionLabel) }
         }
     }
-}
-
-@Composable
-internal fun BatchDialog(batch: BatchEntity, onSave: (BatchEntity, (Int) -> Unit) -> Unit, onDismiss: () -> Unit) {
-    var name by rememberSaveable { mutableStateOf(batch.name) }
-    var subject by rememberSaveable { mutableStateOf(batch.subject.orEmpty()) }
-    var days by rememberSaveable { mutableStateOf(batch.classDays.orEmpty()) }
-    var time by rememberSaveable { mutableStateOf(batch.classTime.orEmpty()) }
-    var error by remember { mutableStateOf<Int?>(null) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(if (batch.id == 0L) R.string.batch_new else R.string.batch_edit)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                FormField(name, { name = it; error = null }, stringResource(R.string.field_batch_name), error = error?.let { stringResource(it) })
-                FormField(subject, { subject = it }, stringResource(R.string.field_subject))
-                FormField(days, { days = it }, stringResource(R.string.field_class_days), help = stringResource(R.string.field_class_days_hint))
-                FormField(time, { time = it }, stringResource(R.string.field_class_time), help = stringResource(R.string.field_class_time_hint), keyboard = FieldKeyboard.Text)
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                if (name.isBlank()) error = R.string.err_name_required
-                else onSave(batch.copy(name = name, subject = subject, classDays = days, classTime = time)) { error = it }
-            }) { Text(stringResource(R.string.save)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
-    )
 }

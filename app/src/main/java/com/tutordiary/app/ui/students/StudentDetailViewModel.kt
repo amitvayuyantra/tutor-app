@@ -90,8 +90,5 @@ class StudentDetailViewModel @Inject constructor(
     fun unarchive() = launchSafely { repo.unarchiveStudent(studentId) }
     fun deleteForever(onDone: () -> Unit) = launchSafely { repo.deleteStudentPermanently(studentId); onDone() }
     fun markReminderOpened() = launchSafely { repo.markReminderOpened(studentId) }
-    fun addWaiver(month: Int, amount: Long, note: String, onDone: () -> Unit) = launchSafely {
-        repo.addWaiver(studentId, month, amount, note); onDone()
-    }
     fun deleteWaiver(id: Long) = launchSafely { repo.deleteWaiver(id) }
 }
