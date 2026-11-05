@@ -173,16 +173,20 @@ class AppFlowTest {
         compose.onNodeWithText("Batch name").performTextInput("Class 8 Maths")
         compose.clickButton("Save")
         waitFor("Class 8 Maths")
-        compose.onNode(hasContentDescription("Go back")).performClick()
-        waitFor("No active students in this batch.")
+        diagnose("attendance after batch") {
+            compose.onNode(hasContentDescription("Go back")).performClick()
+            waitFor("No active students in this batch.")
+        }
 
         // 9. Settings
         println("STEP 9: Settings")
-        compose.clickButton("Settings")
-        waitFor("Backup and export")
-        waitFor("No backup made yet")
-        compose.clickButton("Edit reminder messages")
-        waitFor("English message")
-        waitFor("{student}", substring = true)
+        diagnose("settings") {
+            compose.clickButton("Settings")
+            waitFor("Backup and export")
+            waitFor("No backup made yet")
+            compose.clickButton("Edit reminder messages")
+            waitFor("English message")
+            waitFor("{student}", substring = true)
+        }
     }
 }
