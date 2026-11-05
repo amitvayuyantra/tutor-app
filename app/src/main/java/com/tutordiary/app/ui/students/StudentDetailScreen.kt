@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tutordiary.app.R
 import com.tutordiary.app.data.db.PaymentEntity
+import com.tutordiary.app.data.db.StudentEntity
 import com.tutordiary.app.domain.Money
 import com.tutordiary.app.domain.PhoneNumbers
 import com.tutordiary.app.ui.common.AppScaffold
@@ -64,7 +65,7 @@ import com.tutordiary.app.ui.common.formatMonth
 import com.tutordiary.app.ui.common.formatMonthKey
 import com.tutordiary.app.ui.theme.AmountStyle
 
-private enum class Confirm { ARCHIVE, UNARCHIVE, DELETE }
+internal enum class Confirm { ARCHIVE, UNARCHIVE, DELETE }
 
 @Composable
 fun StudentDetailScreen(
@@ -105,135 +106,19 @@ fun StudentDetailScreen(
         when {
             state.loading -> LoadingBox()
             student == null -> EmptyState(stringResource(R.string.err_not_found), "")
-            else -> Column(
-                Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                val ledger = state.ledger
-                // ---- Balance ----
-                SectionCard {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Column(Modifier.weight(1f)) {
-                            when {
-                                ledger == null || (ledger.amountDue == 0L && ledger.credit == 0L) ->
-                                    Text(stringResource(R.string.all_clear), style = AmountStyle)
-                                ledger.amountDue > 0 -> {
-                                    Text(stringResource(R.string.balance_due), style = MaterialTheme.typography.labelLarge)
-                                    Text(Money.format(ledger.amountDue), style = AmountStyle)
-                                }
-                                else -> {
-                                    Text(stringResource(R.string.advance_credit), style = MaterialTheme.typography.labelLarge)
-                                    Text(Money.format(ledger.credit), style = AmountStyle)
-                                }
-                            }
-                        }
-                        if (ledger != null) StatusChip(ledger.status)
-                    }
-                    if (ledger != null && ledger.unpaidMonths.isNotEmpty()) {
-                        Text(
-                            stringResource(R.string.label_months_due, ledger.unpaidMonths.size) + " · " +
-                                stringResource(R.string.due_since, formatDate(ledger.oldestDueDate!!, locale)),
-                        )
-                    }
-                    Text(
-                        student.lastReminderOn?.let { stringResource(R.string.last_reminder, formatEpochDay(it, locale)) }
-                            ?: stringResource(R.string.last_reminder_never),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(onClick = { onRecordPayment(student.id) }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) {
-                            Text(stringResource(R.string.record_payment))
-                        }
-                        OutlinedButton(
-                            onClick = { showReminder = true },
-                            enabled = state.profile != null && (ledger?.amountDue ?: 0) > 0,
-                            modifier = Modifier.weight(1f).heightIn(min = 48.dp),
-                        ) { Text(stringResource(R.string.send_reminder)) }
-                    }
-                    Text(stringResource(R.string.reminder_note), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-
-                // ---- Details ----
-                SectionCard {
-                    if (student.archivedOn != null) {
-                        SmallChip(stringResource(R.string.archived_on, formatEpochDay(student.archivedOn, locale)))
-                    }
-                    Text(stringResource(R.string.parent_label, student.parentName))
-                    Text(stringResource(R.string.phone_label, PhoneNumbers.display(student.phone)))
-                    Text(stringResource(R.string.batch_label, state.batchName ?: stringResource(R.string.no_batch)))
-                    Text(stringResource(R.string.fee_label, Money.format(student.monthlyFee), student.dueDay))
-                    Text(stringResource(R.string.joined_label, formatEpochDay(student.joinDate, locale)))
-                    student.notes?.let { Text(stringResource(R.string.notes_label, it)) }
-                }
-
-                // ---- Fees by month ----
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SectionTitle(stringResource(R.string.section_fees), Modifier.weight(1f))
-                    if (state.months.any { it.waiver == null }) {
-                        TextButton(onClick = { showWaiver = true }) { Text(stringResource(R.string.waive_month)) }
-                    }
-                }
-                if (state.months.isEmpty()) Text(stringResource(R.string.no_charges))
-                state.months.forEach { line ->
-                    SectionCard {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(formatMonthKey(line.charge.month, locale), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                            Text(
-                                if (line.remaining > 0) stringResource(R.string.remaining_label, Money.format(line.remaining))
-                                else stringResource(R.string.paid_full),
-                                color = if (line.remaining > 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.labelLarge,
-                            )
-                        }
-                        Text(
-                            stringResource(R.string.month_fee_line, Money.format(line.charge.amount), formatEpochDay(line.charge.dueDate, locale)),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        line.waiver?.let { w ->
-                            Text(stringResource(R.string.waived_label, Money.format(w.amount)) + " — " + w.note, style = MaterialTheme.typography.bodyMedium)
-                            TextButton(onClick = { removeWaiverId = w.id }) { Text(stringResource(R.string.remove_waiver)) }
-                        }
-                    }
-                }
-
-                // ---- Payments ----
-                SectionTitle(stringResource(R.string.section_payments))
-                if (state.payments.isEmpty()) Text(stringResource(R.string.no_payments))
-                state.payments.forEach { p -> PaymentRow(p, locale) { onEditPayment(student.id, p.id) } }
-
-                // ---- Attendance ----
-                SectionTitle(stringResource(R.string.section_attendance))
-                attendance?.let { a ->
-                    SectionCard {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { vm.shiftAttendanceMonth(-1) }) {
-                                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.prev_month))
-                            }
-                            Text(formatMonth(a.month, locale), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                            IconButton(onClick = { vm.shiftAttendanceMonth(1) }) {
-                                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.next_month))
-                            }
-                        }
-                        if (a.present + a.absent == 0) Text(stringResource(R.string.attendance_none))
-                        else Text(stringResource(R.string.attendance_summary, a.present, a.present + a.absent), style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-
-                // ---- Archive / delete ----
-                HorizontalDivider(Modifier.padding(vertical = 8.dp))
-                if (student.archivedOn == null) {
-                    OutlinedButton(onClick = { confirm = Confirm.ARCHIVE }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                        Text(stringResource(R.string.archive))
-                    }
-                } else {
-                    OutlinedButton(onClick = { confirm = Confirm.UNARCHIVE }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                        Text(stringResource(R.string.unarchive))
-                    }
-                }
-                TextButton(onClick = { confirm = Confirm.DELETE }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                    Text(stringResource(R.string.delete_forever), color = MaterialTheme.colorScheme.error)
-                }
-            }
+            else -> StudentDetailBody(
+                student = student,
+                state = state,
+                attendance = attendance,
+                modifier = Modifier.fillMaxSize().padding(padding),
+                onRecordPayment = { onRecordPayment(student.id) },
+                onSendReminder = { showReminder = true },
+                onWaive = { showWaiver = true },
+                onRemoveWaiver = { removeWaiverId = it },
+                onEditPayment = { onEditPayment(student.id, it) },
+                onShiftMonth = vm::shiftAttendanceMonth,
+                onConfirm = { confirm = it },
+            )
         }
     }
 
@@ -273,6 +158,153 @@ fun StudentDetailScreen(
             onSave = { month, amount, note -> vm.addWaiver(month, amount, note) { showWaiver = false } },
             onDismiss = { showWaiver = false },
         )
+    }
+}
+
+/** The scrolling content of a student's page. Stateless, so it can be tested on its own. */
+@Composable
+internal fun StudentDetailBody(
+    student: StudentEntity,
+    state: StudentDetailState,
+    attendance: AttendanceSummary?,
+    modifier: Modifier = Modifier,
+    onRecordPayment: () -> Unit = {},
+    onSendReminder: () -> Unit = {},
+    onWaive: () -> Unit = {},
+    onRemoveWaiver: (Long) -> Unit = {},
+    onEditPayment: (Long) -> Unit = {},
+    onShiftMonth: (Long) -> Unit = {},
+    onConfirm: (Confirm) -> Unit = {},
+) {
+    val locale = currentLocale()
+    Column(
+        modifier.verticalScroll(rememberScrollState()).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        val ledger = state.ledger
+        // ---- Balance ----
+        SectionCard {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    when {
+                        ledger == null || (ledger.amountDue == 0L && ledger.credit == 0L) ->
+                            Text(stringResource(R.string.all_clear), style = AmountStyle)
+                        ledger.amountDue > 0 -> {
+                            Text(stringResource(R.string.balance_due), style = MaterialTheme.typography.labelLarge)
+                            Text(Money.format(ledger.amountDue), style = AmountStyle)
+                        }
+                        else -> {
+                            Text(stringResource(R.string.advance_credit), style = MaterialTheme.typography.labelLarge)
+                            Text(Money.format(ledger.credit), style = AmountStyle)
+                        }
+                    }
+                }
+                if (ledger != null) StatusChip(ledger.status)
+            }
+            if (ledger != null && ledger.unpaidMonths.isNotEmpty()) {
+                Text(
+                    stringResource(R.string.label_months_due, ledger.unpaidMonths.size) + " · " +
+                        stringResource(R.string.due_since, formatDate(ledger.oldestDueDate!!, locale)),
+                )
+            }
+            Text(
+                student.lastReminderOn?.let { stringResource(R.string.last_reminder, formatEpochDay(it, locale)) }
+                    ?: stringResource(R.string.last_reminder_never),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onRecordPayment, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.record_payment))
+                }
+                OutlinedButton(
+                    onClick = onSendReminder,
+                    enabled = state.profile != null && (ledger?.amountDue ?: 0) > 0,
+                    modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                ) { Text(stringResource(R.string.send_reminder)) }
+            }
+            Text(stringResource(R.string.reminder_note), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
+        // ---- Details ----
+        SectionCard {
+            if (student.archivedOn != null) {
+                SmallChip(stringResource(R.string.archived_on, formatEpochDay(student.archivedOn, locale)))
+            }
+            Text(stringResource(R.string.parent_label, student.parentName))
+            Text(stringResource(R.string.phone_label, PhoneNumbers.display(student.phone)))
+            Text(stringResource(R.string.batch_label, state.batchName ?: stringResource(R.string.no_batch)))
+            Text(stringResource(R.string.fee_label, Money.format(student.monthlyFee), student.dueDay))
+            Text(stringResource(R.string.joined_label, formatEpochDay(student.joinDate, locale)))
+            student.notes?.let { Text(stringResource(R.string.notes_label, it)) }
+        }
+
+        // ---- Fees by month ----
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionTitle(stringResource(R.string.section_fees), Modifier.weight(1f))
+            if (state.months.any { it.waiver == null }) {
+                TextButton(onClick = onWaive) { Text(stringResource(R.string.waive_month)) }
+            }
+        }
+        if (state.months.isEmpty()) Text(stringResource(R.string.no_charges))
+        state.months.forEach { line ->
+            SectionCard {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(formatMonthKey(line.charge.month, locale), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    Text(
+                        if (line.remaining > 0) stringResource(R.string.remaining_label, Money.format(line.remaining))
+                        else stringResource(R.string.paid_full),
+                        color = if (line.remaining > 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+                Text(
+                    stringResource(R.string.month_fee_line, Money.format(line.charge.amount), formatEpochDay(line.charge.dueDate, locale)),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                line.waiver?.let { w ->
+                    Text(stringResource(R.string.waived_label, Money.format(w.amount)) + " — " + w.note, style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = { onRemoveWaiver(w.id) }) { Text(stringResource(R.string.remove_waiver)) }
+                }
+            }
+        }
+
+        // ---- Payments ----
+        SectionTitle(stringResource(R.string.section_payments))
+        if (state.payments.isEmpty()) Text(stringResource(R.string.no_payments))
+        state.payments.forEach { p -> PaymentRow(p, locale) { onEditPayment(p.id) } }
+
+        // ---- Attendance ----
+        SectionTitle(stringResource(R.string.section_attendance))
+        attendance?.let { a ->
+            SectionCard {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { onShiftMonth(-1) }) {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.prev_month))
+                    }
+                    Text(formatMonth(a.month, locale), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    IconButton(onClick = { onShiftMonth(1) }) {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.next_month))
+                    }
+                }
+                if (a.present + a.absent == 0) Text(stringResource(R.string.attendance_none))
+                else Text(stringResource(R.string.attendance_summary, a.present, a.present + a.absent), style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+
+        // ---- Archive / delete ----
+        HorizontalDivider(Modifier.padding(vertical = 8.dp))
+        if (student.archivedOn == null) {
+            OutlinedButton(onClick = { onConfirm(Confirm.ARCHIVE) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.archive))
+            }
+        } else {
+            OutlinedButton(onClick = { onConfirm(Confirm.UNARCHIVE) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.unarchive))
+            }
+        }
+        TextButton(onClick = { onConfirm(Confirm.DELETE) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+            Text(stringResource(R.string.delete_forever), color = MaterialTheme.colorScheme.error)
+        }
     }
 }
 
