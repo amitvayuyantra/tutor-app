@@ -164,8 +164,10 @@ class AppFlowTest {
         compose.clickButton("Create batch")
         waitFor("Batches")
         diagnose("batch page") {
-            waitFor("New batch")
-            compose.clickButton("New batch")
+            compose.waitUntil(15_000) {
+                compose.onAllNodes(hasContentDescription("New batch") and hasClickAction()).fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNode(hasContentDescription("New batch") and hasClickAction()).performClick()
             waitFor("Batch name")
         }
         compose.onNodeWithText("Batch name").performTextInput("Class 8 Maths")

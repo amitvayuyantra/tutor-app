@@ -31,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -101,8 +103,10 @@ fun StudentsScreen(
         title = stringResource(R.string.tab_students),
         actions = { TextButton(onClick = onOpenBatches) { Text(stringResource(R.string.batches)) } },
         floatingActionButton = {
+            val addStudent = stringResource(R.string.add_student)
             ExtendedFloatingActionButton(
                 onClick = onAddStudent,
+                modifier = Modifier.semantics { contentDescription = addStudent },
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text(stringResource(R.string.add_student)) },
             )
