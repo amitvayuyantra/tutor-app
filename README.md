@@ -115,8 +115,37 @@ Stack: Kotlin, Jetpack Compose (Material 3), MVVM, Room, Hilt, kotlinx.serializa
 
 ## 9. Test results
 
-TEST_RESULTS_PLACEHOLDER
+All tests run automatically on GitHub for every push (see the **Actions** tab). Latest run: **60 passed, 0 failed**.
+
+| Test group | Tests | What it checks |
+|---|---|---|
+| `BillingTest` | 11 | Monthly charges, no duplicates, catch-up after months away, due day 31 in short months and leap years, join/archive boundaries, un-archive gap, fee change, year boundary |
+| `LedgerTest` | 11 | Balance = fees − waivers − payments, partial and advance payments, oldest-month-first, due vs overdue, waiver limits |
+| `TutorRepositoryTest` | 14 | Same rules against the real database: duplicate-proof charges, catch-up, fee change only affects future, archive/un-archive, waivers, zero/negative payments rejected, permanent delete, attendance save/edit, backup → restore round trip, failed restore leaves data untouched |
+| `BackupCodecTest` | 6 | Backup file round trip; rejects non-JSON, other apps, newer versions, broken links and bad values |
+| `PhoneNumbersTest` | 3 | Indian mobile validation and +91 normalising |
+| `ReminderTest` | 4 | Reminder text, UPI line removed when no UPI, Hindi months, wa.me link encoding |
+| `MoneyTest`, `CsvTest` | 4 | ₹1,50,000 formatting, parsing, CSV escaping |
+| `LanguageTest` | 2 | English and Hindi text load |
+| `ScreenPartsTest`, `StudentPageTest` | 4 | Screens draw and settle (no endless redrawing) |
+| `AppFlowTest` | 1 | Opens the real app and taps through it: setup → add student (with a wrong number first) → record part payment → WhatsApp reminder (checks the wa.me link) → waive a month → create batch → attendance → settings |
+
+The screen tests run on a simulated Android (Robolectric), not on a real phone.
 
 ## 10. Known limitations
 
-KNOWN_LIMITATIONS_PLACEHOLDER
+**Not checked on a real phone yet.** Everything above was tested on GitHub's computers with a simulated Android. Not yet seen on a real device:
+- How it looks (light/dark mode, big font sizes, Hindi text fitting, small screens).
+- Real WhatsApp opening, the system file picker (backup, restore, CSV) and the calendar picker.
+- Speed on low-end phones.
+- The release (shrunk) build was built but never opened. The test APK is the debug build.
+
+**By design in this version:**
+- One batch per student. Join month and archive month are charged in full (no part-month fees; use a waiver).
+- Payments aren't tied to a month; they clear the oldest unpaid month first.
+- A fee change starts next month. To change this month's amount, use a waiver.
+- Moving a join date later removes fees before the new month. Moving it earlier adds fees at the current fee.
+- If WhatsApp isn't installed, the wa.me link may open in a web browser instead of showing the copy option.
+- "Reminder opened" never means "delivered".
+- Backup files are not encrypted, and there's no automatic backup. The tutor must make and store backups.
+- This repo is public, including the **test** signing key (safe: it's only for test builds).

@@ -89,6 +89,7 @@ jobs:
             "$BT/aapt" dump badging "$APK" | head -n 5 >> ci-out/release-permissions.txt 2>&1 || true
           fi
           ls -la app/build/outputs/apk/*/ app/build/outputs/bundle/*/ > ci-out/outputs.txt 2>&1 || true
+          cp -r app/schemas ci-out/schemas 2>/dev/null || true
           mkdir -p ci-out/test-xml && cp app/build/test-results/testDebugUnitTest/*.xml ci-out/test-xml/ 2>/dev/null || true
           echo "${{ steps.gradle.outcome }}" > ci-out/outcome.txt
           echo "${{ github.sha }}" > ci-out/commit.txt
