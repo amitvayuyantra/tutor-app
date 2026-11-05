@@ -6,6 +6,14 @@ A simple, fully offline Android app for home tutors in India. Track students, at
 - English and Hindi.
 - Min Android 8.0 (API 26). Target/compile SDK 36.
 
+## Screenshots
+
+| Home | Student | Reminder (Hindi) | Attendance |
+|---|---|---|---|
+| ![](docs/screenshots/en-light-02-home.png) | ![](docs/screenshots/en-dark-04-student.png) | ![](docs/screenshots/hi-05-reminder.png) | ![](docs/screenshots/en-light-07-attendance.png) |
+
+More in [`docs/screenshots`](docs/screenshots) (English, dark mode, Hindi). They are made automatically by `ScreenshotTour` on a simulated Android phone, with sample data.
+
 ---
 
 ## 1. Try it on your phone (test build)

@@ -68,6 +68,13 @@ class AppFlowTest {
         }
     }
 
+    /** Presses the phone's Back button once the screen has settled. */
+    private fun pressBack() {
+        compose.waitForIdle()
+        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
+        compose.waitForIdle()
+    }
+
     private fun SemanticsNodeInteractionsProvider.clickButton(text: String) {
         val node = onNode(hasText(text) and hasClickAction())
         try { node.performScrollTo() } catch (e: AssertionError) { /* not inside a scrolling list */ }
@@ -174,7 +181,7 @@ class AppFlowTest {
         compose.clickButton("Save")
         waitFor("Class 8 Maths")
         diagnose("attendance after batch") {
-            compose.onNode(hasContentDescription("Go back")).performClick()
+            pressBack()
             waitFor("No active students in this batch.")
         }
 
