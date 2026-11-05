@@ -1,4 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tutor Diary</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="close">Close</string>
+    <string name="copy">Copy message</string>
+    <string name="loading">Loading</string>
+    <string name="saved">Saved</string>
+    <string name="cd_back">Go back</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_pick_date">Tap to choose a date</string>
+
+    <!-- Tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_students">Students</string>
+    <string name="tab_attendance">Attendance</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Setup -->
+    <string name="setup_title">Welcome to Tutor Diary</string>
+    <string name="setup_subtitle">Tell us a little about you. You can change this later in Settings.</string>
+    <string name="field_tutor_name">Your name</string>
+    <string name="field_business_name">Business name (optional)</string>
+    <string name="field_upi">UPI ID (optional)</string>
+    <string name="field_upi_help">Parents will see this in fee reminders, e.g. name@okaxis</string>
+    <string name="setup_start">Start</string>
+
+    <!-- Errors -->
+    <string name="err_generic">Something went wrong. Please try again.</string>
+    <string name="err_name_required">Please enter a name.</string>
+    <string name="err_parent_required">Please enter the parent\'s name.</string>
+    <string name="err_phone_invalid">Enter a valid 10-digit Indian mobile number.</string>
+    <string name="err_fee_invalid">Enter the fee in whole rupees, e.g. 1500.</string>
+    <string name="err_due_day_invalid">Due day must be between 1 and 31.</string>
+    <string name="err_amount_positive">Amount must be more than ₹0.</string>
+    <string name="err_amount_invalid">Enter the amount in whole rupees, e.g. 500.</string>
+    <string name="err_no_charge">There is no fee for that month.</string>
+    <string name="err_waiver_too_big">The waiver can\'t be more than that month\'s fee.</string>
+    <string name="err_waiver_exists">This month already has a waiver.</string>
+    <string name="err_note_required">Please add a short reason.</string>
+    <string name="err_not_found">This item no longer exists.</string>
+
+    <!-- Home -->
+    <string name="home_expected">Expected this month</string>
+    <string name="home_collected">Collected this month</string>
+    <string name="home_unpaid">Total unpaid</string>
+    <string name="home_overdue">Overdue students</string>
+    <string name="home_unpaid_list">Students with unpaid fees</string>
+    <string name="home_all_paid">All fees are paid. Well done!</string>
+    <string name="home_no_students">No students yet</string>
+    <string name="home_no_students_body">Add your first student to start tracking fees.</string>
+    <string name="home_backup_banner">No recent backup. If this phone is lost or broken, all your records are lost.</string>
+    <string name="home_backup_banner_action">Back up now</string>
+    <string name="record_payment">Record payment</string>
+    <string name="send_reminder">Send reminder</string>
+    <string name="label_months_due">Months due: %1$d</string>
+    <string name="due_since">Due since %1$s</string>
+
+    <!-- Status -->
+    <string name="status_paid">Paid</string>
+    <string name="status_partial">Partly paid</string>
+    <string name="status_due">Due</string>
+    <string name="status_overdue">Overdue</string>
+    <string name="status_archived">Archived</string>
+    <string name="credit_label">Advance: %1$s</string>
+
+    <!-- Students -->
+    <string name="add_student">Add student</string>
+    <string name="search_students">Search by name or number</string>
+    <string name="show_archived">Show archived</string>
+    <string name="no_students_found">No students match your search.</string>
+    <string name="students_empty_title">No students yet</string>
+    <string name="students_empty_body">Tap “Add student” to add your first one.</string>
+    <string name="batches">Batches</string>
+    <string name="no_batch">No batch</string>
+
+    <!-- Student form -->
+    <string name="student_new">New student</string>
+    <string name="student_edit">Edit student</string>
+    <string name="field_student_name">Student name</string>
+    <string name="field_parent_name">Parent name</string>
+    <string name="field_whatsapp">Parent WhatsApp number</string>
+    <string name="field_whatsapp_help">10-digit mobile number</string>
+    <string name="field_batch">Batch</string>
+    <string name="field_fee">Monthly fee (₹)</string>
+    <string name="field_due_day">Fee due day (1–31)</string>
+    <string name="field_due_day_help">If a month is shorter, the last day of that month is used.</string>
+    <string name="field_join_date">Join date</string>
+    <string name="field_notes">Notes (optional)</string>
+    <string name="fee_change_note">A new fee applies from next month. Past months keep their old fee.</string>
+
+    <!-- Student details -->
+    <string name="student_details">Student</string>
+    <string name="balance_due">Balance due</string>
+    <string name="advance_credit">Advance paid (credit)</string>
+    <string name="all_clear">No dues</string>
+    <string name="last_reminder">Last reminder opened: %1$s</string>
+    <string name="last_reminder_never">No reminder sent yet</string>
+    <string name="reminder_note">“Opened” only means WhatsApp was opened. It does not mean the message was delivered.</string>
+    <string name="parent_label">Parent: %1$s</string>
+    <string name="phone_label">WhatsApp: %1$s</string>
+    <string name="batch_label">Batch: %1$s</string>
+    <string name="fee_label">Monthly fee: %1$s (due on day %2$d)</string>
+    <string name="joined_label">Joined: %1$s</string>
+    <string name="notes_label">Notes: %1$s</string>
+    <string name="archived_on">Archived on %1$s</string>
+    <string name="section_fees">Fees by month</string>
+    <string name="section_payments">Payments</string>
+    <string name="section_attendance">Attendance</string>
+    <string name="no_payments">No payments yet.</string>
+    <string name="no_charges">No fees yet. Fees start from the join month.</string>
+    <string name="month_fee_line">Fee %1$s · due %2$s</string>
+    <string name="remaining_label">Unpaid %1$s</string>
+    <string name="paid_full">Paid</string>
+    <string name="waive_month">Waive fee</string>
+    <string name="waived_label">Waived %1$s</string>
+    <string name="remove_waiver">Remove waiver</string>
+    <string name="remove_waiver_confirm">Remove this waiver? That month\'s fee will be due again.</string>
+    <string name="attendance_summary">Present %1$d of %2$d days</string>
+    <string name="attendance_none">No attendance marked this month.</string>
+    <string name="prev_month">Previous month</string>
+    <string name="next_month">Next month</string>
+    <string name="archive">Archive</string>
+    <string name="unarchive">Make active again</string>
+    <string name="archive_confirm_title">Archive this student?</string>
+    <string name="archive_confirm_body">No new fees will be added after this month. Past fees, payments and attendance are kept. You can make them active again later.</string>
+    <string name="unarchive_confirm_body">Fees will start again from this month. Months while archived are not charged.</string>
+    <string name="delete_forever">Delete permanently</string>
+    <string name="delete_forever_title">Delete permanently?</string>
+    <string name="delete_forever_body">This removes %1$s and ALL their fees, payments and attendance. This cannot be undone.\n\nTip: use Archive instead to keep the records.</string>
+    <string name="delete_forever_confirm">Yes, delete forever</string>
+
+    <!-- Payments -->
+    <string name="payment_new">Record payment</string>
+    <string name="payment_edit">Edit payment</string>
+    <string name="field_amount">Amount (₹)</string>
+    <string name="field_payment_date">Payment date</string>
+    <string name="field_method">Paid by</string>
+    <string name="method_cash">Cash</string>
+    <string name="method_upi">UPI</string>
+    <string name="method_other">Other</string>
+    <string name="field_payment_note">Note (optional)</string>
+    <string name="delete_payment">Delete payment</string>
+    <string name="delete_payment_confirm">Delete this payment of %1$s? The balance will go up again.</string>
+
+    <!-- Waiver -->
+    <string name="waiver_title">Waive fee for a month</string>
+    <string name="field_month">Month</string>
+    <string name="field_waiver_amount">Amount to waive (₹)</string>
+    <string name="field_waiver_note">Reason (required)</string>
+    <string name="waiver_no_months">No months left to waive.</string>
+
+    <!-- Reminder -->
+    <string name="reminder_title">Fee reminder</string>
+    <string name="reminder_language">Message language</string>
+    <string name="lang_english">English</string>
+    <string name="lang_hindi">हिन्दी</string>
+    <string name="lang_system">Phone default</string>
+    <string name="open_whatsapp">Open WhatsApp</string>
+    <string name="whatsapp_failed">Could not open WhatsApp. Is it installed? You can copy the message and send it yourself.</string>
+    <string name="reminder_copied">Message copied.</string>
+    <string name="reminder_send_hint">WhatsApp will open with this message. You must press Send yourself.</string>
+
+    <!-- Attendance -->
+    <string name="attendance_batch">Batch</string>
+    <string name="attendance_date">Date</string>
+    <string name="attendance_no_batches">No batches yet</string>
+    <string name="attendance_no_batches_body">Create a batch first, then put students in it.</string>
+    <string name="create_batch">Create batch</string>
+    <string name="attendance_no_students">No active students in this batch.</string>
+    <string name="mark_all_present">Mark all present</string>
+    <string name="present">Present</string>
+    <string name="absent">Absent</string>
+    <string name="attendance_saved">Attendance saved</string>
+    <string name="attendance_count">%1$d present · %2$d absent</string>
+    <string name="attendance_editing_saved">Already saved for this day. You can still change it.</string>
+    <string name="attendance_note">Tap a student to mark them absent. Attendance does not change fees.</string>
+
+    <!-- Batches -->
+    <string name="batches_title">Batches</string>
+    <string name="batch_new">New batch</string>
+    <string name="batch_edit">Edit batch</string>
+    <string name="field_batch_name">Batch name</string>
+    <string name="field_subject">Subject (optional)</string>
+    <string name="field_class_days">Class days (optional)</string>
+    <string name="field_class_days_hint">e.g. Mon, Wed, Fri</string>
+    <string name="field_class_time">Time (optional)</string>
+    <string name="field_class_time_hint">e.g. 5:00 PM</string>
+    <string name="batches_empty">No batches yet. Tap “New batch” to create one.</string>
+    <string name="archived_section">Archived</string>
+    <string name="batch_archive_confirm">Archive this batch? It will be hidden from attendance and the batch list in the student form.</string>
+    <string name="batch_has_students">This batch still has %1$d active students. Move them to another batch first.</string>
+    <string name="batch_students_count">Active students: %1$d</string>
+
+    <!-- Settings -->
+    <string name="section_profile">Your details</string>
+    <string name="save_profile">Save details</string>
+    <string name="section_templates">Reminders and batches</string>
+    <string name="edit_templates">Edit reminder messages</string>
+    <string name="manage_batches">Manage batches</string>
+    <string name="templates_title">Reminder messages</string>
+    <string name="template_en">English message</string>
+    <string name="template_hi">Hindi message</string>
+    <string name="template_help">You can use these words in curly brackets. The app fills them in:\n{student} student name\n{parent} parent name\n{amount} amount due\n{months} months due\n{upi} your UPI ID\n{tutor} your name\nIf you have no UPI ID, any line with {upi} is left out.</string>
+    <string name="reset_default">Reset to default</string>
+    <string name="section_language">App language</string>
+    <string name="section_backup">Backup and export</string>
+    <string name="backup_warning">Your records are stored only on this phone. If the phone is lost, broken or reset, everything is gone unless you have a backup file. After making a backup, save it to Google Drive or send it to yourself.</string>
+    <string name="last_backup">Last backup: %1$s</string>
+    <string name="last_backup_never">No backup made yet</string>
+    <string name="create_backup">Create backup</string>
+    <string name="restore_backup">Restore backup</string>
+    <string name="backup_done">Backup saved</string>
+    <string name="backup_failed">Could not save the backup.</string>
+    <string name="restore_confirm_title">Replace all data?</string>
+    <string name="restore_confirm_body">This backup has %1$d students and %2$d payments (made on %3$s).\n\nRestoring will DELETE everything now in the app and replace it with the backup. This cannot be undone.</string>
+    <string name="restore_confirm">Replace my data</string>
+    <string name="restore_done">Backup restored</string>
+    <string name="restore_failed">Could not restore. Your current data was not changed.</string>
+    <string name="restore_bad_file">This is not a Tutor Diary backup file.</string>
+    <string name="restore_newer">This backup was made by a newer version of the app. Please update the app first.</string>
+    <string name="restore_invalid">This backup file is damaged or incomplete. Nothing was changed.</string>
+    <string name="export_students">Export students (CSV)</string>
+    <string name="export_balances">Export fee balances (CSV)</string>
+    <string name="export_done">File saved</string>
+    <string name="export_failed">Could not save the file.</string>
+    <string name="section_about">About</string>
+    <string name="about_text">Tutor Diary works fully offline. No account, no ads, no tracking. Your data never leaves this phone unless you share a backup or export file yourself.</string>
+    <string name="version_label">Version %1$s</string>
+
+    <!-- CSV column titles -->
+    <string name="csv_name">Student name</string>
+    <string name="csv_parent">Parent name</string>
+    <string name="csv_phone">WhatsApp</string>
+    <string name="csv_batch">Batch</string>
+    <string name="csv_fee">Monthly fee</string>
+    <string name="csv_due_day">Due day</string>
+    <string name="csv_join">Join date</string>
+    <string name="csv_status">Status</string>
+    <string name="csv_notes">Notes</string>
+    <string name="csv_charged">Total fees</string>
+    <string name="csv_waived">Waived</string>
+    <string name="csv_paid">Paid</string>
+    <string name="csv_balance">Balance due</string>
+    <string name="csv_credit">Advance</string>
+    <string name="csv_months_due">Months due</string>
+    <string name="csv_active">Active</string>
+
+    <!-- Default reminder messages. Both are always available, whatever the app language. -->
+    <string name="default_template_en" translatable="false">Namaste {parent} ji,\n\nThis is a gentle reminder that the tuition fee for {student} is pending.\nAmount due: {amount}\nFor: {months}\n\nYou can pay by UPI to: {upi}\n\nThank you,\n{tutor}</string>
+    <string name="default_template_hi" translatable="false">नमस्ते {parent} जी,\n\nयह एक विनम्र याद-दिहानी है कि {student} की ट्यूशन फीस बाकी है।\nबकाया राशि: {amount}\nमहीने: {months}\n\nआप UPI से यहाँ भुगतान कर सकते हैं: {upi}\n\nधन्यवाद,\n{tutor}</string>
 </resources>
