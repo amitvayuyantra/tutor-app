@@ -163,7 +163,7 @@ private fun BatchCard(row: BatchRow, onEdit: () -> Unit, actionLabel: String, on
 }
 
 @Composable
-private fun BatchDialog(batch: BatchEntity, onSave: (BatchEntity, (Int) -> Unit) -> Unit, onDismiss: () -> Unit) {
+internal fun BatchDialog(batch: BatchEntity, onSave: (BatchEntity, (Int) -> Unit) -> Unit, onDismiss: () -> Unit) {
     var name by rememberSaveable { mutableStateOf(batch.name) }
     var subject by rememberSaveable { mutableStateOf(batch.subject.orEmpty()) }
     var days by rememberSaveable { mutableStateOf(batch.classDays.orEmpty()) }

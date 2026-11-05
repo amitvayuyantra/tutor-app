@@ -45,6 +45,23 @@ class AppFlowTest {
         }
     }
 
+    /** Runs [block]; if the screen never settles, prints which state kept changing. */
+    private fun diagnose(label: String, block: () -> Unit) {
+        val changes = java.util.concurrent.ConcurrentHashMap<String, java.util.concurrent.atomic.AtomicInteger>()
+        val handle = androidx.compose.runtime.snapshots.Snapshot.registerApplyObserver { changed, _ ->
+            changed.forEach { changes.getOrPut(it.javaClass.name + " " + it.toString().take(300)) { java.util.concurrent.atomic.AtomicInteger() }.incrementAndGet() }
+        }
+        try {
+            block()
+        } catch (t: Throwable) {
+            println("STATE CHANGES WHILE STUCK at $label (most frequent first):")
+            changes.entries.sortedByDescending { it.value.get() }.take(15).forEach { println("  ${it.value.get()} x ${it.key}") }
+            throw t
+        } finally {
+            handle.dispose()
+        }
+    }
+
     private fun SemanticsNodeInteractionsProvider.clickButton(text: String) =
         onNode(hasText(text) and hasClickAction()).performScrollTo().performClick()
 
@@ -120,8 +137,10 @@ class AppFlowTest {
         } finally {
             handle.dispose()
         }
-        compose.clickButton("Waive fee")
-        waitFor("Waive fee for a month")
+        diagnose("waiver dialog") {
+            compose.clickButton("Waive fee")
+            waitFor("Waive fee for a month")
+        }
         compose.onNodeWithText("Reason (required)").performTextInput("Diwali")
         compose.clickButton("Save")
         waitFor("Advance paid (credit)")
@@ -135,7 +154,10 @@ class AppFlowTest {
         waitFor("No batches yet")
         compose.clickButton("Create batch")
         waitFor("Batches")
-        compose.clickButton("New batch")
+        diagnose("batch dialog") {
+            compose.clickButton("New batch")
+            waitFor("Batch name")
+        }
         compose.onNodeWithText("Batch name").performTextInput("Class 8 Maths")
         compose.clickButton("Save")
         waitFor("Class 8 Maths")

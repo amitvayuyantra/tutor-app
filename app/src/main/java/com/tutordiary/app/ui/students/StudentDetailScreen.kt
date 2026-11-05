@@ -329,7 +329,7 @@ private fun PaymentRow(p: PaymentEntity, locale: java.util.Locale, onClick: () -
 }
 
 @Composable
-private fun WaiverDialog(months: List<MonthLine>, onSave: (Int, Long, String) -> Unit, onDismiss: () -> Unit) {
+internal fun WaiverDialog(months: List<MonthLine>, onSave: (Int, Long, String) -> Unit, onDismiss: () -> Unit) {
     val locale = currentLocale()
     var month by rememberSaveable { mutableStateOf(months.firstOrNull()?.charge?.month) }
     val charge = months.firstOrNull { it.charge.month == month }?.charge
