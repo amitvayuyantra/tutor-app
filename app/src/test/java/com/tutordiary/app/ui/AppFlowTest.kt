@@ -62,8 +62,11 @@ class AppFlowTest {
         }
     }
 
-    private fun SemanticsNodeInteractionsProvider.clickButton(text: String) =
-        onNode(hasText(text) and hasClickAction()).performScrollTo().performClick()
+    private fun SemanticsNodeInteractionsProvider.clickButton(text: String) {
+        val node = onNode(hasText(text) and hasClickAction())
+        try { node.performScrollTo() } catch (e: AssertionError) { /* not inside a scrolling list */ }
+        node.performClick()
+    }
 
     @Test
     fun tutorCanSetUpAddStudentRecordPaymentAndRemind() {
