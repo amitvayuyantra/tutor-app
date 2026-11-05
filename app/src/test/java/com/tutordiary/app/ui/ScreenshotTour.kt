@@ -1,13 +1,12 @@
 package com.tutordiary.app.ui
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
 import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.performClick
@@ -28,6 +27,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import org.robolectric.shadows.ShadowDialog
 import java.io.File
 import java.time.LocalDate
 import javax.inject.Inject
@@ -65,13 +65,39 @@ class ScreenshotTour {
 
     private fun click(text: String) = compose.onNode(hasText(text) and hasClickAction()).performClick()
 
-    private fun shot(prefix: String, name: String) {
+    /** Draws the screen (and an open pop-up, if any) into a PNG. */
+    private fun shot(prefix: String, name: String, withDialog: Boolean = false) {
         compose.waitForIdle()
-        val roots = compose.onAllNodes(isRoot())
-        val count = roots.fetchSemanticsNodes().size
-        val bitmap = roots[count - 1].captureToImage().asAndroidBitmap()
+        var bitmap: Bitmap? = null
+        compose.runOnUiThread {
+            val root = compose.activity.window.decorView
+            val w = root.width
+            val h = root.height
+            val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bmp)
+            root.draw(canvas)
+            if (withDialog) {
+                val dialog = ShadowDialog.getLatestDialog()
+                val dv = dialog?.window?.decorView
+                if (dv != null) {
+                    if (dv.width == 0 || dv.height == 0) {
+                        dv.measure(
+                            View.MeasureSpec.makeMeasureSpec(w - 64, View.MeasureSpec.AT_MOST),
+                            View.MeasureSpec.makeMeasureSpec(h - 128, View.MeasureSpec.AT_MOST),
+                        )
+                        dv.layout(0, 0, dv.measuredWidth, dv.measuredHeight)
+                    }
+                    canvas.drawColor(0x99000000.toInt())
+                    canvas.save()
+                    canvas.translate((w - dv.width) / 2f, (h - dv.height) / 2f)
+                    dv.draw(canvas)
+                    canvas.restore()
+                }
+            }
+            bitmap = bmp
+        }
         val dir = File("build/screenshots").apply { mkdirs() }
-        File(dir, "$prefix-$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        File(dir, "$prefix-$name.png").outputStream().use { bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, it) }
         println("Saved $prefix-$name.png")
     }
 
@@ -123,7 +149,7 @@ class ScreenshotTour {
 
         click(t(R.string.send_reminder))
         waitFor(t(R.string.reminder_title))
-        shot(prefix, "05-reminder")
+        shot(prefix, "05-reminder", withDialog = true)
         click(t(R.string.close))
 
         click(t(R.string.record_payment))
