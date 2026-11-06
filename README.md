@@ -1,8 +1,10 @@
 # Tutor Diary
 
-A simple, fully offline Android app for home tutors in India. Track students, attendance and unpaid fees, and send polite fee reminders on WhatsApp.
+A simple Android app for home tutors in India. Track students, attendance and unpaid fees, and send polite fee reminders on WhatsApp. Students and parents can sign in to see their own fees and attendance.
 
-- No account, no internet, no ads, no tracking. Data stays on the phone.
+- Two logins (both "Sign in with Google"): **tutor** and **student/parent**.
+- The tutor's full records stay on the tutor's phone and work offline. Only invited students' summaries go online.
+- No ads, no tracking.
 - English and Hindi.
 - Min Android 8.0 (API 26). Target/compile SDK 36.
 
@@ -15,6 +17,32 @@ A simple, fully offline Android app for home tutors in India. Track students, at
 More in [`docs/screenshots`](docs/screenshots) (English, dark mode, Hindi). They are made automatically by `ScreenshotTour` on a simulated Android phone, with sample data.
 
 ---
+
+## 0. Logins (tutor and student/parent)
+
+**How it works**
+1. First screen: *Who is using this phone?* → **I'm the tutor** or **I'm a student or parent**.
+2. Both sign in with Google (free; no passwords, no SMS).
+3. Tutor: open a student → **Manage student app access** → **Make invite code** → **Send code on WhatsApp**.
+4. Parent: installs the app → *I'm a student or parent* → signs in → types the 6-letter code.
+5. The parent now sees only that student's fees due, payments, attendance and the tutor's UPI ID. Read-only. Updates arrive whenever the tutor's phone is online.
+
+Each code works once. "Make a new code" lets one more person join (e.g. student *and* parent). "Remove access" unlinks everyone.
+
+**What goes online** (Firebase Firestore): for invited students only — name, parent name, fee, amount due, unpaid months, last 24 payments, last 6 months' attendance counts, tutor name and UPI ID. **Never**: parent phone numbers, notes, uninvited students.
+
+**Security rules**: `firestore.rules` decides who can read/write. They are tested on every build against the real Firestore emulator (`rules-test/`). You must paste them into Firebase (step 6 below).
+
+### One-time Firebase setup (the tutor/owner does this)
+1. https://console.firebase.google.com → **Create project** `tutor-diary` (Analytics off).
+2. **Build → Authentication** → Get started → **Google** → Enable → Save.
+3. **Build → Firestore Database** → Create → location **asia-south1** → production mode.
+4. Project settings → **Add app → Android**: package `com.tutordiary.app.test`, SHA-1 `DF:CE:B9:54:E7:07:24:3A:6A:C7:80:4A:E5:F1:48:9E:48:57:C5:11` (the public test key).
+5. Add a second Android app: package `com.tutordiary.app` (add your **upload key** and **Play app-signing key** SHA-1 later, from Play Console → App integrity).
+6. **Firestore → Rules**: paste the contents of `firestore.rules` → **Publish**.
+7. Download **`google-services.json`** (after steps 4–5) and put it in `app/`.
+
+Without `google-services.json` the app still builds and runs, but sign-in is switched off (the tutor can use it offline on one phone).
 
 ## 1. Try it on your phone (test build)
 
@@ -78,13 +106,14 @@ Before each Play release, raise `versionCode` (and `versionName`) in `app/build.
 
 ## 4. Permissions
 
-The release app requests **no user-facing permissions**. Checked on the built release APK with `aapt dump permissions`:
+The app requests **no permissions that show a pop-up** to the user. Checked on the built release APK with `aapt dump permissions`:
 
 | Permission | Why |
 |---|---|
+| `INTERNET`, `ACCESS_NETWORK_STATE` | Google sign-in, and sharing invited students' summaries. |
 | `com.tutordiary.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | Added automatically by AndroidX. Internal, signature-level; lets the app's own components talk to each other safely. Not shown to users. |
 
-Not requested: INTERNET, SMS, Call log, Contacts, Storage, Location, Photos. The manifest actively strips `INTERNET` and `ACCESS_NETWORK_STATE` if any library tries to add them. `allowBackup="false"` and data-extraction rules block cloud backup and device transfer.
+Not requested: SMS, Call log, Contacts, Storage, Location, Photos, Camera. `allowBackup="false"` and data-extraction rules block Android's own cloud backup and device transfer of the tutor's records.
 
 ## 5. How fees work (plain words)
 

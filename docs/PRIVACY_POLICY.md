@@ -4,34 +4,42 @@ _Last updated: [DATE]_ · _Contact: [YOUR EMAIL]_
 
 > Draft only. Not legal advice. Fill in the brackets and have it reviewed before publishing.
 
-**In short: Tutor Diary does not collect any of your data. Everything stays on your phone.**
+**In short:** the tutor's full records stay on the tutor's phone. Only a small summary for each student the tutor chooses to invite is stored online, so that student or parent can see their own fees and attendance. No ads. No tracking. Nothing is sold.
 
-## What the app stores
-The tutor types these details into the app:
-- Tutor: your name, business name (optional), UPI ID (optional), reminder message texts.
-- Students: student name, parent name, parent WhatsApp number, batch, monthly fee, fee due day, join date, status, notes (optional).
-- Fees: monthly fee charges, payments (amount, date, method, note), fee waivers (amount, reason).
-- Attendance: present/absent per student per day.
+## Who uses the app
+- **Tutors**, to keep records of their students, fees and attendance.
+- **Students and parents**, who can see their own record after the tutor sends them an invite code.
+
+## What we store, and where
+
+**On the tutor's phone only:** tutor name, business name, UPI ID, reminder messages; students' names, parent names, parent WhatsApp numbers, batches, fees, due days, join dates, notes; payments (amount, date, method, note), fee waivers, attendance.
+
+**Online (Google Firebase, region asia-south1, Mumbai):**
+- **Accounts:** when you sign in with Google we receive your name, email address and an account ID. Google's privacy policy also applies to sign-in.
+- **For each invited student only:** student name, parent name, the tutor's display name and UPI ID, monthly fee and due day, amount due or advance, unpaid months, the last 24 payments (date, amount, method), and attendance counts for the last 6 months.
+- **Invite codes**, and which accounts joined with them.
+
+We never put these online: parent phone numbers, the tutor's notes, payment notes, students who were not invited.
 
 The app never asks for date of birth, address, photos or government ID numbers.
 
-## Where it is stored
-Only on your phone, inside the app's private storage. The app has **no internet permission**, no account, no ads, no analytics and no crash reporting. We (the developer) never receive or see your data.
+## Who can see the online data
+- The tutor who created the record.
+- The students/parents who joined with that record's code. They can only read it, never change it.
+- Nobody else. This is enforced by security rules on the server.
+- We (the developer) do not read it except if needed to fix a problem you report.
 
-Android cloud backup and device-to-device transfer are switched off for this app.
+## Data sent elsewhere by you
+- **WhatsApp reminders and invite codes:** the app opens WhatsApp with a ready message. Nothing is sent until you press Send.
+- **Backup and CSV files:** saved where you choose. Anyone with the file can read it.
 
-## When data leaves your phone
-Only when **you** choose to:
-- **WhatsApp reminders:** the app opens WhatsApp with a ready-made message. Nothing is sent until you press Send inside WhatsApp. WhatsApp's own privacy policy then applies.
-- **Backup and CSV export files:** you choose where to save them (for example, phone storage or Google Drive). Anyone who has the file can read it, so keep it safe.
-
-## Children's data
-Tutors may store their students' names. This information is entered by the tutor, stays on the tutor's phone, and is never sent to us or to any third party by the app.
+## Children
+Records may be about children. A tutor's records are entered by the tutor. A child's record is only shared online if the tutor invites them, and only the people who join with the tutor's code can see it. The app is meant to be used by adults (tutors and parents).
 
 ## Deleting data
-- Delete a student permanently from the student's page.
-- Delete everything by uninstalling the app or using Android Settings → Apps → Tutor Diary → Clear storage.
-- Backup files you saved yourself must be deleted by you.
+- **Tutor:** "Remove access" stops sharing a student. Deleting a student permanently also deletes their online record. Uninstalling the app deletes the records on the phone.
+- **Student/parent:** "Stop seeing this record" unlinks your account.
+- **Account deletion:** email [YOUR EMAIL] and we will delete your account and any online data linked to it within 30 days.
 
 ## Changes
 If this policy changes, the new version will be published at this address with a new date.
