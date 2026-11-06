@@ -1,0 +1,118 @@
+[36m[1mi  emulators:[22m[39m Starting emulators: firestore
+[36m[1mi  emulators:[22m[39m Detected demo project ID "demo-tutor-diary", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+[33m[1m⚠ [22m[39m It appears you are running in a CI environment. You can avoid downloading the Firestore Emulator repeatedly by caching the /home/runner/.cache/firebase/emulators directory.
+[36m[1mi  firestore:[22m[39m downloading cloud-firestore-emulator-v1.19.8.jar...
+
+[36m[1mi  firestore:[22m[39m Firestore Emulator logging to [1mfirestore-debug.log[22m
+[32m[1m✔  firestore:[22m[39m Firestore Emulator UI websocket is running on 9150.
+[36m[1mi [22m[39m Running script: [1mnpm --prefix rules-test test[22m
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: tutor can create, update and delete their own shared record
+ok 1 - tutor can create, update and delete their own shared record
+  ---
+  duration_ms: 1079.29724
+  ...
+# [2026-11-06T10:51:30.352Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a936 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# false for 'create' @ L25, evaluation error at L32:9 for 'update' @ L32, false for 'create' @ L25
+# [2026-11-06T10:51:30.385Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a937 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# false for 'create' @ L25, evaluation error at L32:9 for 'update' @ L32, false for 'create' @ L25
+# [2026-11-06T10:51:30.461Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a939 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L32:9 for 'update' @ L32, false for 'update' @ L32
+# [2026-11-06T10:51:30.488Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a93a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L32:9 for 'update' @ L32, false for 'update' @ L32
+# [2026-11-06T10:51:30.509Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a93b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L44:24 for 'delete' @ L44, false for 'delete' @ L44
+# Subtest: a tutor cannot write a record in someone else's name
+ok 2 - a tutor cannot write a record in someone else's name
+  ---
+  duration_ms: 209.699871
+  ...
+# [2026-11-06T10:51:30.614Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a93f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# false for 'create' @ L25, false for 'update' @ L32
+# Subtest: nobody signed out can read or write anything
+ok 3 - nobody signed out can read or write anything
+  ---
+  duration_ms: 104.962865
+  ...
+# Subtest: a stranger cannot read a record or list invite codes
+ok 4 - a stranger cannot read a record or list invite codes
+  ---
+  duration_ms: 126.878789
+  ...
+# Subtest: parent joins with the code and can then read only that record
+ok 5 - parent joins with the code and can then read only that record
+  ---
+  duration_ms: 155.610313
+  ...
+# Subtest: a used code cannot be used by a second person
+ok 6 - a used code cannot be used by a second person
+  ---
+  duration_ms: 171.710217
+  ...
+# Subtest: the same person can use their code again without error
+ok 7 - the same person can use their code again without error
+  ---
+  duration_ms: 98.872319
+  ...
+# [2026-11-06T10:51:31.230Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a957 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L32:9 for 'update' @ L32, false for 'update' @ L32
+# Subtest: joining is impossible without claiming a code
+ok 8 - joining is impossible without claiming a code
+  ---
+  duration_ms: 63.338577
+  ...
+# [2026-11-06T10:51:31.330Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a95b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L32:9 for 'update' @ L32, false for 'update' @ L32
+# [2026-11-06T10:51:31.358Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a95c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L32:9 for 'update' @ L32, false for 'update' @ L32
+# [2026-11-06T10:51:31.378Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a95d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L44:24 for 'delete' @ L44, false for 'delete' @ L44
+# Subtest: a linked parent cannot change fees or add other people
+ok 9 - a linked parent cannot change fees or add other people
+  ---
+  duration_ms: 148.128387
+  ...
+# Subtest: a linked parent can stop seeing the record
+ok 10 - a linked parent can stop seeing the record
+  ---
+  duration_ms: 115.329279
+  ...
+# [2026-11-06T10:51:31.597Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a966 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L32:9 for 'update' @ L32, false for 'update' @ L32
+# Subtest: tutor can remove access; tutor cannot sneak extra people in
+ok 11 - tutor can remove access; tutor cannot sneak extra people in
+  ---
+  duration_ms: 158.840872
+  ...
+# Subtest: an old code stops working after the tutor makes a new one
+ok 12 - an old code stops working after the tutor makes a new one
+  ---
+  duration_ms: 102.298112
+  ...
+# [2026-11-06T10:51:31.821Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a96f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# evaluation error at L52:24 for 'create' @ L52, false for 'update' @ L60, false for 'create' @ L52
+# [2026-11-06T10:51:31.844Z]  @firebase/firestore: Firestore (11.10.0): GrpcConnection RPC 'Write' stream 0x4d62a970 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+# false for 'create' @ L52, false for 'update' @ L60
+# Subtest: an invite cannot point at another tutor's record
+ok 13 - an invite cannot point at another tutor's record
+  ---
+  duration_ms: 88.362223
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2805.030761
+[32m[1m✔ [22m[39m Script exited successfully (code 0)
+[36m[1mi  emulators:[22m[39m Shutting down emulators.
+[36m[1mi  firestore:[22m[39m Stopping Firestore Emulator
+[36m[1mi  hub:[22m[39m Stopping emulator hub
+[36m[1mi  logging:[22m[39m Stopping Logging Emulator

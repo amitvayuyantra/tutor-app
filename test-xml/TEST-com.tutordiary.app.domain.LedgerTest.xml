@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tutordiary.app.domain.LedgerTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-06T10:54:19.654Z" hostname="runnervmwuk1x" time="0.029">
+  <properties/>
+  <testcase name="partialPaymentPaysOldestMonthFirst" classname="com.tutordiary.app.domain.LedgerTest" time="0.015"/>
+  <testcase name="noChargesNoPaymentsIsPaidWithZeroBalance" classname="com.tutordiary.app.domain.LedgerTest" time="0.004"/>
+  <testcase name="fullyPaidIsPaid" classname="com.tutordiary.app.domain.LedgerTest" time="0.0"/>
+  <testcase name="waiverCannotMakeAMonthNegative" classname="com.tutordiary.app.domain.LedgerTest" time="0.006"/>
+  <testcase name="fullWaiverClearsTheMonth" classname="com.tutordiary.app.domain.LedgerTest" time="0.001"/>
+  <testcase name="dueBeforeDueDateOverdueAfter" classname="com.tutordiary.app.domain.LedgerTest" time="0.0"/>
+  <testcase name="advancePaymentShowsCredit" classname="com.tutordiary.app.domain.LedgerTest" time="0.0"/>
+  <testcase name="balanceIsChargesMinusWaiversMinusPayments" classname="com.tutordiary.app.domain.LedgerTest" time="0.0"/>
+  <testcase name="oldestDueDateIsFirstUnpaidMonth" classname="com.tutordiary.app.domain.LedgerTest" time="0.0"/>
+  <testcase name="advanceIsUsedByLaterCharges" classname="com.tutordiary.app.domain.LedgerTest" time="0.0"/>
+  <testcase name="partialAfterDueDateIsOverdue" classname="com.tutordiary.app.domain.LedgerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

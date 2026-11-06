@@ -1,0 +1,13 @@
+package: com.tutordiary.app
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.USE_BIOMETRIC'
+uses-permission: name='android.permission.USE_FINGERPRINT'
+uses-permission: name='com.google.android.providers.gsf.permission.READ_GSERVICES'
+permission: com.tutordiary.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='com.tutordiary.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+package: name='com.tutordiary.app' versionCode='2' versionName='1.1.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+sdkVersion:'26'
+targetSdkVersion:'36'
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'

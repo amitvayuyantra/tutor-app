@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tutordiary.app.domain.MoneyTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-06T10:54:19.687Z" hostname="runnervmwuk1x" time="0.012">
+  <properties/>
+  <testcase name="indianGrouping" classname="com.tutordiary.app.domain.MoneyTest" time="0.008"/>
+  <testcase name="parsing" classname="com.tutordiary.app.domain.MoneyTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

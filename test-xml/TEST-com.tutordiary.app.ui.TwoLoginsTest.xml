@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tutordiary.app.ui.TwoLoginsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-06T10:54:53.855Z" hostname="runnervmwuk1x" time="2.4">
+  <properties/>
+  <testcase name="tutorInvitesAndParentSeesOnlyTheirFees" classname="com.tutordiary.app.ui.TwoLoginsTest" time="2.4"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

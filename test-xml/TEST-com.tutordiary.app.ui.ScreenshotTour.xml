@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tutordiary.app.ui.ScreenshotTour" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-06T10:54:40.809Z" hostname="runnervmwuk1x" time="11.538">
+  <properties/>
+  <testcase name="english" classname="com.tutordiary.app.ui.ScreenshotTour" time="4.388"/>
+  <testcase name="dark" classname="com.tutordiary.app.ui.ScreenshotTour" time="3.955"/>
+  <testcase name="hindi" classname="com.tutordiary.app.ui.ScreenshotTour" time="3.195"/>
+  <system-out><![CDATA[Saved en-light-00-role.png
+Saved en-light-00-signin.png
+Saved en-light-01-setup.png
+Saved en-light-02-home.png
+Saved en-light-03-students.png
+Saved en-light-04-student.png
+Saved en-light-05-reminder.png
+Saved en-light-06-payment.png
+Saved en-light-07-attendance.png
+Saved en-light-08-settings.png
+Saved en-dark-00-role.png
+Saved en-dark-00-signin.png
+Saved en-dark-01-setup.png
+Saved en-dark-02-home.png
+Saved en-dark-03-students.png
+Saved en-dark-04-student.png
+Saved en-dark-05-reminder.png
+Saved en-dark-06-payment.png
+Saved en-dark-07-attendance.png
+Saved en-dark-08-settings.png
+Saved hi-00-role.png
+Saved hi-00-signin.png
+Saved hi-01-setup.png
+Saved hi-02-home.png
+Saved hi-03-students.png
+Saved hi-04-student.png
+Saved hi-05-reminder.png
+Saved hi-06-payment.png
+Saved hi-07-attendance.png
+Saved hi-08-settings.png
+]]></system-out>
+  <system-err><![CDATA[System.logW: A resource failed to call close. 
+]]></system-err>
+</testsuite>

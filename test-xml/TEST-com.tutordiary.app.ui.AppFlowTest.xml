@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tutordiary.app.ui.AppFlowTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-06T10:54:19.952Z" hostname="runnervmwuk1x" time="19.606">
+  <properties/>
+  <testcase name="tutorCanSetUpAddStudentRecordPaymentAndRemind" classname="com.tutordiary.app.ui.AppFlowTest" time="19.606"/>
+  <system-out><![CDATA[STEP 1: First-launch setup
+STEP 2: Home, empty
+STEP 3: Add a student (bad phone first, to see validation)
+STEP 4: Back on home: the student owes this month's fee
+STEP 5: Record a part payment
+STEP 6: Reminder: preview contains the details, then opens wa.me
+STEP 7: Student page: last reminder recorded, waive the month
+Activity state before opening student: RESUMED
+STEP 8: Batches and attendance
+STEP 9: Settings
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

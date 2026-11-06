@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tutordiary.app.data.MigrationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-06T10:54:03.705Z" hostname="runnervmwuk1x" time="13.499">
+  <properties/>
+  <testcase name="version1To2KeepsStudentsAndPayments" classname="com.tutordiary.app.data.MigrationTest" time="13.499"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
