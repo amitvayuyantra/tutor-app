@@ -74,6 +74,7 @@ fun StudentDetailScreen(
     onRecordPayment: (Long) -> Unit,
     onEditPayment: (studentId: Long, paymentId: Long) -> Unit,
     onWaive: (studentId: Long) -> Unit,
+    onOpenAccess: (studentId: Long) -> Unit = {},
     vm: StudentDetailViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -114,6 +115,7 @@ fun StudentDetailScreen(
                 onRecordPayment = { onRecordPayment(student.id) },
                 onSendReminder = { showReminder = true },
                 onWaive = { onWaive(student.id) },
+                onOpenAccess = { onOpenAccess(student.id) },
                 onRemoveWaiver = { removeWaiverId = it },
                 onEditPayment = { onEditPayment(student.id, it) },
                 onShiftMonth = vm::shiftAttendanceMonth,
@@ -168,6 +170,7 @@ internal fun StudentDetailBody(
     onEditPayment: (Long) -> Unit = {},
     onShiftMonth: (Long) -> Unit = {},
     onConfirm: (Confirm) -> Unit = {},
+    onOpenAccess: () -> Unit = {},
 ) {
     val locale = currentLocale()
     Column(
@@ -281,6 +284,18 @@ internal fun StudentDetailBody(
                 }
                 if (a.present + a.absent == 0) Text(stringResource(R.string.attendance_none))
                 else Text(stringResource(R.string.attendance_summary, a.present, a.present + a.absent), style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+
+        // ---- Student app ----
+        SectionTitle(stringResource(R.string.access_title))
+        SectionCard {
+            Text(
+                stringResource(if (student.inviteCode == null) R.string.access_off else R.string.access_on),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            OutlinedButton(onClick = onOpenAccess, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.access_open))
             }
         }
 

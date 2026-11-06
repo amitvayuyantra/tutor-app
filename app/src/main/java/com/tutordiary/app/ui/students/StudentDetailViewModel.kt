@@ -44,6 +44,7 @@ data class StudentDetailState(
 @HiltViewModel
 class StudentDetailViewModel @Inject constructor(
     private val repo: TutorRepository,
+    private val sync: com.tutordiary.app.data.sync.TutorSync,
     savedState: SavedStateHandle,
 ) : ViewModel() {
     val studentId: Long = savedState.get<Long>("studentId") ?: 0L
@@ -88,7 +89,7 @@ class StudentDetailViewModel @Inject constructor(
     fun shiftAttendanceMonth(by: Long) { attendanceMonth.value = attendanceMonth.value.plusMonths(by) }
     fun archive() = launchSafely { repo.archiveStudent(studentId) }
     fun unarchive() = launchSafely { repo.unarchiveStudent(studentId) }
-    fun deleteForever(onDone: () -> Unit) = launchSafely { repo.deleteStudentPermanently(studentId); onDone() }
+    fun deleteForever(onDone: () -> Unit) = launchSafely { sync.forget(studentId); repo.deleteStudentPermanently(studentId); onDone() }
     fun markReminderOpened() = launchSafely { repo.markReminderOpened(studentId) }
     fun deleteWaiver(id: Long) = launchSafely { repo.deleteWaiver(id) }
 }

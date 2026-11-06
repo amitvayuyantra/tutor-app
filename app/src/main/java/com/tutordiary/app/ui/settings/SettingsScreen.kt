@@ -51,6 +51,7 @@ import com.tutordiary.app.ui.setup.ProfileFields
 fun SettingsScreen(
     onOpenTemplates: () -> Unit,
     onOpenBatches: () -> Unit,
+    onSignOut: () -> Unit = {},
     vm: SettingsViewModel = hiltViewModel(),
 ) {
     val profile by vm.profile.collectAsStateWithLifecycle()
@@ -160,6 +161,26 @@ fun SettingsScreen(
                     )
                 },
             )
+
+            // ---- Account ----
+            SectionTitle(stringResource(R.string.section_account))
+            var confirmSignOut by rememberSaveable { mutableStateOf(false) }
+            Text(
+                vm.accountEmail?.let { stringResource(R.string.signed_in_as, it) } ?: stringResource(R.string.not_signed_in),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            OutlinedButton(onClick = { confirmSignOut = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+                Text(stringResource(R.string.sign_out))
+            }
+            if (confirmSignOut) {
+                ConfirmDialog(
+                    title = stringResource(R.string.sign_out),
+                    body = stringResource(R.string.sign_out_tutor_body),
+                    confirmLabel = stringResource(R.string.sign_out),
+                    onConfirm = { confirmSignOut = false; onSignOut() },
+                    onDismiss = { confirmSignOut = false },
+                )
+            }
 
             // ---- About ----
             SectionTitle(stringResource(R.string.section_about))

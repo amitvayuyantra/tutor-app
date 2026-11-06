@@ -1,0 +1,68 @@
+rules_version = '2';
+
+// Who may read or change what in Tutor Diary's online database.
+// Paste this into Firebase console → Firestore Database → Rules, then Publish.
+//
+//   students/{key}  one shared record per invited student. Written only by its tutor.
+//                   Readable by its tutor and by the students/parents who joined with a code.
+//   invites/{code}  one-use code that links a student/parent account to a record.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+
+    match /students/{key} {
+      function isTutor() { return signedIn() && resource.data.tutorUid == me(); }
+      function isLinked() { return signedIn() && me() in resource.data.get('linkedUids', []); }
+      function changedOnly(fields) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields); }
+      function oldLinks() { return resource.data.get('linkedUids', []); }
+      function newLinks() { return request.resource.data.get('linkedUids', []); }
+
+      allow read: if isTutor() || isLinked();
+
+      // The record id always starts with the tutor's own account id.
+      allow create: if signedIn()
+        && request.resource.data.tutorUid == me()
+        && key.matches(me() + '_[0-9]+')
+        && !('linkedUids' in request.resource.data && request.resource.data.linkedUids.size() > 0);
+
+      allow update: if
+        // The tutor updates the summary. The owner can never change.
+        (isTutor() && request.resource.data.tutorUid == me()
+          && (newLinks().toSet().difference(oldLinks().toSet()).size() == 0))
+        // A student/parent joins with the current, unused-by-others invite code.
+        || (signedIn() && changedOnly(['linkedUids'])
+          && newLinks().toSet() == oldLinks().toSet().union([me()].toSet())
+          && resource.data.get('inviteCode', null) != null
+          && getAfter(/databases/$(database)/documents/invites/$(resource.data.inviteCode)).data.claimedBy == me()
+          && getAfter(/databases/$(database)/documents/invites/$(resource.data.inviteCode)).data.studentKey == key)
+        // A student/parent stops seeing the record.
+        || (isLinked() && changedOnly(['linkedUids'])
+          && newLinks().toSet() == oldLinks().toSet().difference([me()].toSet()));
+
+      allow delete: if isTutor();
+    }
+
+    match /invites/{code} {
+      // Anyone signed in may look up one code (never list them all).
+      allow get: if signedIn();
+      allow list: if false;
+
+      allow create: if signedIn()
+        && code.matches('[A-Z2-9]{6}')
+        && request.resource.data.keys().hasOnly(['tutorUid', 'studentKey', 'claimedBy'])
+        && request.resource.data.tutorUid == me()
+        && request.resource.data.claimedBy == null
+        && getAfter(/databases/$(database)/documents/students/$(request.resource.data.studentKey)).data.tutorUid == me();
+
+      // A code can be claimed once, by the person using it.
+      allow update: if signedIn()
+        && resource.data.claimedBy == null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['claimedBy'])
+        && request.resource.data.claimedBy == me();
+
+      allow delete: if signedIn() && resource.data.tutorUid == me();
+    }
+  }
+}

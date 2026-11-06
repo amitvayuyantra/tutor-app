@@ -131,6 +131,12 @@ class ScreenshotTour {
     }
 
     private fun tour(prefix: String) {
+        waitFor(t(R.string.role_question))
+        shot(prefix, "00-role")
+        click(t(R.string.role_tutor))
+        waitFor(t(R.string.signin_title_tutor))
+        shot(prefix, "00-signin")
+        click(t(R.string.signin_google))
         waitFor(t(R.string.setup_title))
         shot(prefix, "01-setup")
         seed()

@@ -57,6 +57,8 @@ private object Routes {
     const val WAIVER = "waiver/{studentId}"
     const val BATCH_EDIT = "batch_edit/{batchId}"
     fun waiver(studentId: Long) = "waiver/$studentId"
+    const val ACCESS = "access/{studentId}"
+    fun access(studentId: Long) = "access/$studentId"
     fun batchEdit(id: Long) = "batch_edit/$id"
     fun student(id: Long) = "student/$id"
     fun studentEdit(id: Long) = "student_edit/$id"
@@ -70,7 +72,7 @@ private fun NavHostController.switchTab(route: String) = navigate(route) {
 }
 
 @Composable
-fun AppNav() {
+fun AppNav(onSignOut: () -> Unit = {}) {
     val nav = rememberNavController()
     val backStack by nav.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
@@ -123,6 +125,7 @@ fun AppNav() {
                 SettingsScreen(
                     onOpenTemplates = { nav.navigate(Routes.TEMPLATES) },
                     onOpenBatches = { nav.navigate(Routes.BATCHES) },
+                    onSignOut = onSignOut,
                 )
             }
             composable(Routes.STUDENT, arguments = listOf(idArg)) {
@@ -132,6 +135,7 @@ fun AppNav() {
                     onRecordPayment = { nav.navigate(Routes.payment(it)) },
                     onEditPayment = { s, p -> nav.navigate(Routes.payment(s, p)) },
                     onWaive = { nav.navigate(Routes.waiver(it)) },
+                    onOpenAccess = { nav.navigate(Routes.access(it)) },
                 )
             }
             composable(Routes.STUDENT_EDIT, arguments = listOf(idArg)) {
@@ -148,6 +152,7 @@ fun AppNav() {
                 BatchEditScreen(onDone = back)
             }
             composable(Routes.WAIVER, arguments = listOf(idArg)) { WaiverScreen(onDone = back) }
+            composable(Routes.ACCESS, arguments = listOf(idArg)) { com.tutordiary.app.ui.students.AccessScreen(onBack = back) }
             composable(Routes.TEMPLATES) { TemplatesScreen(onBack = back) }
         }
     }

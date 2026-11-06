@@ -254,4 +254,76 @@
     <!-- Default reminder messages. Both are always available, whatever the app language. -->
     <string name="default_template_en" translatable="false">Namaste {parent} ji,\n\nThis is a gentle reminder that the tuition fee for {student} is pending.\nAmount due: {amount}\nFor: {months}\n\nYou can pay by UPI to: {upi}\n\nThank you,\n{tutor}</string>
     <string name="default_template_hi" translatable="false">नमस्ते {parent} जी,\n\nयह एक विनम्र याद-दिहानी है कि {student} की ट्यूशन फीस बाकी है।\nबकाया राशि: {amount}\nमहीने: {months}\n\nआप UPI से यहाँ भुगतान कर सकते हैं: {upi}\n\nधन्यवाद,\n{tutor}</string>
+
+    <!-- Who is using this phone -->
+    <string name="role_question">Who is using this phone?</string>
+    <string name="role_tutor">I\'m the tutor</string>
+    <string name="role_tutor_body">Keep track of students, fees and attendance.</string>
+    <string name="role_student">I\'m a student or parent</string>
+    <string name="role_student_body">See your fees, payments and attendance. You need a code from your tutor.</string>
+
+    <!-- Sign in -->
+    <string name="signin_title_tutor">Tutor sign-in</string>
+    <string name="signin_title_student">Student / parent sign-in</string>
+    <string name="signin_body_tutor">Sign in with the Google account on this phone. Your records stay on this phone. Only the students you invite can see their own fees.</string>
+    <string name="signin_body_student">Sign in with the Google account on this phone. Then enter the code your tutor sent you.</string>
+    <string name="signin_google">Sign in with Google</string>
+    <string name="signin_busy">Signing in…</string>
+    <string name="signin_change_role">Change: I\'m not this person</string>
+    <string name="signin_privacy">We only use your name and email to keep your account. No ads. No tracking.</string>
+    <string name="signin_no_account">No Google account found on this phone. Add one in your phone\'s Settings → Accounts, then try again.</string>
+    <string name="signin_no_internet">No internet. Please connect and try again.</string>
+    <string name="signin_failed">Could not sign in. Please try again.</string>
+    <string name="signin_not_configured">Online sign-in is not set up in this version of the app yet.</string>
+    <string name="signin_continue_offline">Continue without signing in (this phone only)</string>
+    <string name="section_account">Account</string>
+    <string name="signed_in_as">Signed in as %1$s</string>
+    <string name="not_signed_in">Not signed in. Student app sharing is off.</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_tutor_body">Your records stay on this phone. Students already invited will keep seeing the last update until you sign in again.</string>
+    <string name="cd_more">More options</string>
+
+    <!-- Tutor: share with student app -->
+    <string name="access_title">Student app access</string>
+    <string name="access_off">Not shared. The student/parent can\'t see anything yet.</string>
+    <string name="access_on">Shared. The student/parent can see their fees and attendance.</string>
+    <string name="access_open">Manage student app access</string>
+    <string name="access_explain">Make a code and send it to the parent. They install Tutor Diary, choose “I\'m a student or parent”, sign in with Google and type the code.</string>
+    <string name="access_make_code">Make invite code</string>
+    <string name="access_making">Making code…</string>
+    <string name="access_new_code">Make a new code (for one more person)</string>
+    <string name="access_code_label">Invite code</string>
+    <string name="access_nobody_yet">Nobody has joined yet.</string>
+    <string name="access_joined">Joined: %1$d</string>
+    <string name="access_send_whatsapp">Send code on WhatsApp</string>
+    <string name="access_code_note">Each code works for one person. Make a new code if both the student and a parent want to join.</string>
+    <string name="access_remove">Remove access</string>
+    <string name="access_remove_body">Everyone who joined will stop seeing this student\'s record. You can invite them again later.</string>
+    <string name="access_need_signin">Sign in (Settings → Account) to share records with students.</string>
+    <string name="access_no_internet">Could not make a code. Check the internet and try again.</string>
+    <string name="access_what_they_see">They see only this student\'s fees due, payments and attendance. Never your notes or other students. They can\'t change anything.</string>
+    <string name="access_whatsapp_message">Namaste %1$s ji,\n\nYou can now see %2$s\'s fees and attendance in the Tutor Diary app.\n1. Install Tutor Diary\n2. Choose “I\'m a student or parent”\n3. Sign in with Google\n4. Enter this code: %3$s</string>
+
+    <!-- Student / parent app -->
+    <string name="join_title">Enter your code</string>
+    <string name="join_body">Your tutor sends you a 6-letter code on WhatsApp. Type it here to see your fees and attendance.</string>
+    <string name="join_code_label">6-letter code</string>
+    <string name="join_button">Join</string>
+    <string name="join_busy">Checking…</string>
+    <string name="join_bad_code">The code has 6 letters and numbers. Please check it.</string>
+    <string name="join_not_found">This code doesn\'t work. Ask your tutor for a new one.</string>
+    <string name="join_used">This code was already used by someone else. Ask your tutor for a new one.</string>
+    <string name="join_another">Add another code</string>
+    <string name="student_home_title">My fees</string>
+    <string name="tutor_label">Tutor: %1$s</string>
+    <string name="pay_upi_to">Pay by UPI to: %1$s</string>
+    <string name="copy_upi">Copy UPI ID</string>
+    <string name="upi_copied">UPI ID copied</string>
+    <string name="updated_on">Last updated by tutor: %1$s</string>
+    <string name="unpaid_months">Unpaid months</string>
+    <string name="due_on">Due on %1$s</string>
+    <string name="attendance_none_yet">No attendance marked yet.</string>
+    <string name="student_view_note">Something wrong? Please talk to your tutor. Only the tutor can change these records.</string>
+    <string name="leave_record">Stop seeing this record</string>
+    <string name="leave_record_body">%1$s will be removed from this app. You will need a new code from the tutor to see it again.</string>
 </resources>

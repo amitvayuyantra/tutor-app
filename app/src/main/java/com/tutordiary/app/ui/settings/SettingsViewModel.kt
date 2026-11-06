@@ -45,6 +45,7 @@ data class PendingRestore(val data: AllData, val students: Int, val payments: In
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val repo: TutorRepository,
+    private val auth: com.tutordiary.app.data.cloud.AuthService,
     private val backupPrefs: BackupPrefs,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
@@ -58,6 +59,8 @@ class SettingsViewModel @Inject constructor(
     val pendingRestore = MutableStateFlow<PendingRestore?>(null)
 
     fun today(): LocalDate = repo.today()
+
+    val accountEmail: String? get() = auth.user.value?.let { it.email ?: it.name ?: "" }
 
     fun saveProfile(name: String, business: String, upi: String, defaultEn: String, defaultHi: String) {
         viewModelScope.launch {

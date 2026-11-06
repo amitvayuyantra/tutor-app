@@ -33,7 +33,7 @@ data class BackupFile(
 
 @Serializable data class ProfileB(val tutorName: String, val businessName: String? = null, val upiId: String? = null, val templateEn: String, val templateHi: String)
 @Serializable data class BatchB(val id: Long, val name: String, val subject: String? = null, val classDays: String? = null, val classTime: String? = null, val archived: Boolean = false)
-@Serializable data class StudentB(val id: Long, val name: String, val parentName: String, val phone: String, val batchId: Long? = null, val monthlyFee: Long, val dueDay: Int, val joinDate: Long, val archivedOn: Long? = null, val chargesFromMonth: Int, val notes: String? = null, val lastReminderOn: Long? = null)
+@Serializable data class StudentB(val id: Long, val name: String, val parentName: String, val phone: String, val batchId: Long? = null, val monthlyFee: Long, val dueDay: Int, val joinDate: Long, val archivedOn: Long? = null, val chargesFromMonth: Int, val notes: String? = null, val lastReminderOn: Long? = null, val inviteCode: String? = null)
 @Serializable data class ChargeB(val id: Long, val studentId: Long, val month: Int, val amount: Long, val dueDate: Long)
 @Serializable data class WaiverB(val id: Long, val studentId: Long, val month: Int, val amount: Long, val note: String, val createdOn: Long)
 @Serializable data class PaymentB(val id: Long, val studentId: Long, val amount: Long, val date: Long, val method: String, val note: String? = null)
@@ -78,7 +78,7 @@ object BackupCodec {
             batches = data.batches.map { BatchB(it.id, it.name, it.subject, it.classDays, it.classTime, it.archived) },
             students = data.students.map {
                 StudentB(it.id, it.name, it.parentName, it.phone, it.batchId, it.monthlyFee, it.dueDay, it.joinDate,
-                    it.archivedOn, it.chargesFromMonth, it.notes, it.lastReminderOn)
+                    it.archivedOn, it.chargesFromMonth, it.notes, it.lastReminderOn, it.inviteCode)
             },
             charges = data.charges.map { ChargeB(it.id, it.studentId, it.month, it.amount, it.dueDate) },
             waivers = data.waivers.map { WaiverB(it.id, it.studentId, it.month, it.amount, it.note, it.createdOn) },
@@ -104,7 +104,7 @@ object BackupCodec {
                 batches = file.batches.map { BatchEntity(it.id, it.name, it.subject, it.classDays, it.classTime, it.archived) },
                 students = file.students.map {
                     StudentEntity(it.id, it.name, it.parentName, it.phone, it.batchId, it.monthlyFee, it.dueDay, it.joinDate,
-                        it.archivedOn, it.chargesFromMonth, it.notes, it.lastReminderOn)
+                        it.archivedOn, it.chargesFromMonth, it.notes, it.lastReminderOn, it.inviteCode)
                 },
                 charges = file.charges.map { ChargeEntity(it.id, it.studentId, it.month, it.amount, it.dueDate) },
                 waivers = file.waivers.map { WaiverEntity(it.id, it.studentId, it.month, it.amount, it.note, it.createdOn) },

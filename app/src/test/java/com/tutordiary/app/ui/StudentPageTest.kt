@@ -42,6 +42,10 @@ class StudentPageTest {
 
     @Test
     fun studentPageSettles() {
+        waitFor("Who is using this phone?")
+        click("I'm the tutor")
+        waitFor("Tutor sign-in")
+        click("Sign in with Google")
         waitFor("Welcome to Tutor Diary")
         compose.onNodeWithText("Your name").performTextInput("Priya")
         compose.onNodeWithText("Start").performClick()

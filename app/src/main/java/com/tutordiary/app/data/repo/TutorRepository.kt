@@ -206,6 +206,14 @@ class TutorRepository @Inject constructor(
     /** Removes the student and all their charges, payments, waivers and attendance. */
     suspend fun deleteStudentPermanently(id: Long) = studentDao.delete(id)
 
+    /** Saves (or clears) the code a student/parent uses to see this record online. */
+    suspend fun setInviteCode(id: Long, code: String?) {
+        val s = studentDao.get(id) ?: throw RuleException(Rule.NOT_FOUND)
+        studentDao.update(s.copy(inviteCode = code))
+    }
+
+    fun observeAllAttendance(): Flow<List<AttendanceEntity>> = attendanceDao.observeAll()
+
     suspend fun markReminderOpened(id: Long) {
         val s = studentDao.get(id) ?: return
         studentDao.update(s.copy(lastReminderOn = today().toEpochDay()))

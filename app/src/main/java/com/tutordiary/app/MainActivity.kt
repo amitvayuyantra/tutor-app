@@ -12,8 +12,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tutordiary.app.ui.AppNav
 import com.tutordiary.app.ui.MainViewModel
 import com.tutordiary.app.ui.StartState
+import com.tutordiary.app.ui.auth.RoleChoiceScreen
+import com.tutordiary.app.ui.auth.SignInScreen
 import com.tutordiary.app.ui.common.LoadingBox
 import com.tutordiary.app.ui.setup.SetupScreen
+import com.tutordiary.app.ui.student.StudentApp
 import com.tutordiary.app.ui.theme.TutorDiaryTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,12 +35,25 @@ class MainActivity : AppCompatActivity() {
                 // Every time the app is opened or comes back, add any monthly fees that became due.
                 LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { vm.refreshCharges() }
                 val start by vm.start.collectAsStateWithLifecycle()
-                when (start) {
+                val busy by vm.signingIn.collectAsStateWithLifecycle()
+                val error by vm.signInError.collectAsStateWithLifecycle()
+                when (val s = start) {
                     StartState.Loading -> LoadingBox()
-                    StartState.NeedsSetup -> SetupScreen { name, business, upi, onError ->
+                    StartState.ChooseRole -> RoleChoiceScreen(onChoose = vm::chooseRole)
+                    is StartState.SignIn -> SignInScreen(
+                        role = s.role,
+                        configured = vm.authConfigured,
+                        busy = busy,
+                        error = error,
+                        onSignIn = { vm.signIn(this) },
+                        onBack = vm::backToRoleChoice,
+                        onContinueOffline = vm::continueOffline,
+                    )
+                    StartState.TutorSetup -> SetupScreen { name, business, upi, onError ->
                         vm.completeSetup(name, business, upi, defaultEn, defaultHi, onError)
                     }
-                    StartState.Ready -> AppNav()
+                    StartState.TutorReady -> AppNav(onSignOut = vm::signOut)
+                    StartState.StudentReady -> StudentApp(onSignOut = vm::signOut)
                 }
             }
         }

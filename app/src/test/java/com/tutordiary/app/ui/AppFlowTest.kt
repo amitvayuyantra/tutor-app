@@ -85,6 +85,10 @@ class AppFlowTest {
     fun tutorCanSetUpAddStudentRecordPaymentAndRemind() {
         // 1. First-launch setup
         println("STEP 1: First-launch setup")
+        waitFor("Who is using this phone?")
+        compose.clickButton("I'm the tutor")
+        waitFor("Tutor sign-in")
+        compose.clickButton("Sign in with Google")
         waitFor("Welcome to Tutor Diary")
         compose.onNodeWithText("Your name").performTextInput("Priya")
         compose.onNodeWithText("UPI ID (optional)").performTextInput("priya@okaxis")

@@ -12,6 +12,18 @@ plugins {
 // See README "Create a signed release App Bundle".
 val releaseKeystorePath: String? = System.getenv("RELEASE_KEYSTORE_PATH")
 
+// Online sign-in needs the tutor's own Firebase project file (google-services.json).
+// Without it the app still builds and runs, with online features switched off.
+val firebaseConfigFiles = listOf("google-services.json", "src/debug/google-services.json", "src/release/google-services.json")
+    .filter { file(it).exists() }
+if (firebaseConfigFiles.isNotEmpty()) {
+    apply(plugin = "com.google.gms.google-services")
+    // If only the test app was registered in Firebase, the release build simply runs without online features.
+    if (!file("google-services.json").exists() && !file("src/release/google-services.json").exists()) {
+        tasks.configureEach { if (name == "processReleaseGoogleServices") enabled = false }
+    }
+}
+
 android {
     namespace = "com.tutordiary.app"
     compileSdk = 36
@@ -20,8 +32,8 @@ android {
         applicationId = "com.tutordiary.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
     }
@@ -82,6 +94,8 @@ android {
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+    // Lets the database-upgrade test read the saved schema files.
+    sourceSets.getByName("test").assets.srcDir("$projectDir/schemas")
 }
 
 kotlin {
@@ -121,12 +135,21 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services)
+    implementation(libs.googleid)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.androidx.room.testing)
     kspTest(libs.hilt.compiler)
     testImplementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.androidx.compose.ui.test.junit4)

@@ -188,6 +188,9 @@ interface AttendanceDao {
     @Query("SELECT * FROM attendance")
     suspend fun all(): List<AttendanceEntity>
 
+    @Query("SELECT * FROM attendance")
+    fun observeAll(): Flow<List<AttendanceEntity>>
+
     @Insert
     suspend fun insertAll(items: List<AttendanceEntity>)
 

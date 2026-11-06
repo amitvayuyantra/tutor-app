@@ -48,6 +48,8 @@ data class StudentEntity(
     val chargesFromMonth: Int,
     val notes: String?,
     val lastReminderOn: Long?,
+    /** Code the tutor shared so this student/parent can see their record online. Null = not shared. */
+    @ColumnInfo(defaultValue = "NULL") val inviteCode: String? = null,
 )
 
 @Entity(
