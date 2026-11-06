@@ -94,8 +94,7 @@ android {
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
-    // Lets the database-upgrade test read the saved schema files.
-    sourceSets.getByName("test").assets.srcDir("$projectDir/schemas")
+
 }
 
 kotlin {
@@ -149,7 +148,6 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.hilt.android.testing)
-    testImplementation(libs.androidx.room.testing)
     kspTest(libs.hilt.compiler)
     testImplementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.androidx.compose.ui.test.junit4)

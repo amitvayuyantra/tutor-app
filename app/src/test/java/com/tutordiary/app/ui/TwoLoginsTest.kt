@@ -1,6 +1,7 @@
 package com.tutordiary.app.ui
 
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -137,7 +138,8 @@ class TwoLoginsTest {
         click("Join")
         waitFor("This code doesn't work. Ask your tutor for a new one.")
 
-        compose.onNode(hasText("ZZZZZZ")).let { it.performTextClearance(); it.performTextInput(code) }
+        compose.onNode(hasSetTextAction()).performTextClearance()
+        compose.onNode(hasSetTextAction()).performTextInput(code)
         click("Join")
         waitFor("Balance due")
         waitFor("Aarav Mehta")
